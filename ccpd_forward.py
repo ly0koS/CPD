@@ -11,8 +11,18 @@ alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P
 ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
        'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'O']
 
+
+def DataRead(path,L):
+       if os.path.exists(path):
+              for root,dirs,files in os.walk(path):
+                     for name in files:
+                            L.append(name)
+              pass
+       pass
+
 def main():
        files=[]
+       DataRead("output/",files)
        
        pass
 
