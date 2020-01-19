@@ -20,29 +20,36 @@ ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q'
        'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'O']
 
 
-def DataRead(path,files):
+def ReadData(path):
        L=[]
+       num=0
+       i=0
        if os.path.exists(path):
               for root,dirs,files in os.walk(path):
                      for name in files:
                             L.append(name)
+                            num+=1
               pass
-       i=0
+       train_data=np.zeros((num,480,480,1))
        while i<len(L):
               dir=path+str(L[i])
-              files[i]=cv2.imread(dir,cv2.IMREAD_GRAYSCALE)
+              image=tf.io.read_file(dir)
+              image=tf.image.decode_jpeg(image)
+              image=tf.cast(image,tf.float32)/255.0
+              train_data[i]=image
               i+=1
+       return(train_data)
        pass
 
 def Forward(files):
        model=Sequential()
-       model.add(Conv2D(48,(3,3),activation="relu",padding='same',data_format="channels_last",input_shape=(128,128,1)))
-       model.add(MaxPooling2D((2,2),strides=1))
-       model.add(Conv2D(96,(3,3),activation="relu",padding='same'))
-       model.add(MaxPooling2D((2,2),strides=1))
-       model.add(Conv2D(96,(3,3),activation="relu",padding='same'))
+       model.add(Conv2D(24,(3,3),activation="relu",padding='same',data_format="channels_last",input_shape=(480,480,1)))
+       model.add(MaxPooling2D((2,2),strides=2))
+       model.add(Conv2D(48,(3,3),activation="relu",padding='same'))
+       model.add(MaxPooling2D((2,2),strides=2))
+       model.add(Conv2D(48,(3,3),activation="relu",padding='same'))
        model.add(layers.Flatten())
-       model.add(layers.Dense(96, activation='relu'))
+       model.add(layers.Dense(48, activation='relu'))
        model.add(layers.Dense(10, activation='softmax'))
 
        model.summary()
@@ -50,16 +57,12 @@ def Forward(files):
        model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
-       
-       Result=model.fit([files],provinces,epochs=10)
+       return model
 
        pass
 
 def main():
-       train_data=[]
-       train_data=np.ones(train_data)
-       DataRead("output/",train_data)
-       train_data=train_data/255
+       train_data=ReadData("output/")
        Forward(train_data)
        pass
 
