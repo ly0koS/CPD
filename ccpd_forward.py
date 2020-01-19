@@ -2,7 +2,7 @@ import cv2
 import os,sys
 import tensorflow as tf
 import numpy as np
-import keras
+from keras import layers as layers
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
@@ -29,12 +29,22 @@ def DataRead(path,L):
        pass
 
 def Forward(files):
-       hide1=Sequential([
-              Conv2D(filters=48,kernel_size=5,strides=1,padding="same",activation='relu',input_shape=(480,480,1) ),
-              MaxPooling2D(pool_size=(2,2),strides=1,padding="same"),
-              Dropout(rate=0.2)
-              ] )
-       
+       model=Sequential()
+       model.add(Conv2D(48,(3,3),activation="relu",padding='same',input_shape=(128,128,1)))
+       model.add(MaxPooling2D((2,2),strides=1))
+       model.add(Conv2D(96,(3,3),activation="relu",padding='same'))
+       model.add(MaxPooling2D((2,2),strides=1))
+       model.add(Conv2D(96,(3,3),activation="relu",padding='same'))
+       model.add(layers.Flatten())
+       model.add(layers.Dense(96, activation='relu'))
+       model.add(layers.Dense(10, activation='softmax'))
+
+       model.summary()
+
+       model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
        pass
 
 def main():
