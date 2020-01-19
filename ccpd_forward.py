@@ -1,4 +1,4 @@
-import cv2
+from cv2 import cv2
 import os,sys
 import tensorflow as tf
 import numpy as np
@@ -20,17 +20,23 @@ ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q'
        'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'O']
 
 
-def DataRead(path,L):
+def DataRead(path,files):
+       L=[]
        if os.path.exists(path):
               for root,dirs,files in os.walk(path):
                      for name in files:
                             L.append(name)
               pass
+       i=0
+       while i<len(L):
+              dir=path+str(L[i])
+              files[i]=cv2.imread(dir,cv2.IMREAD_GRAYSCALE)
+              i+=1
        pass
 
 def Forward(files):
        model=Sequential()
-       model.add(Conv2D(48,(3,3),activation="relu",padding='same',input_shape=(128,128,1)))
+       model.add(Conv2D(48,(3,3),activation="relu",padding='same',data_format="channels_last",input_shape=(128,128,1)))
        model.add(MaxPooling2D((2,2),strides=1))
        model.add(Conv2D(96,(3,3),activation="relu",padding='same'))
        model.add(MaxPooling2D((2,2),strides=1))
@@ -44,13 +50,17 @@ def Forward(files):
        model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
+       
+       Result=model.fit([files],provinces,epochs=10)
 
        pass
 
 def main():
-       files=[]
-       DataRead("output/",files)
-       Forward(files)
+       train_data=[]
+       train_data=np.ones(train_data)
+       DataRead("output/",train_data)
+       train_data=train_data/255
+       Forward(train_data)
        pass
 
 if __name__ == '__main__':
