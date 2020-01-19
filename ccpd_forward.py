@@ -1,5 +1,13 @@
 import cv2
 import os,sys
+import tensorflow as tf
+import numpy as np
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras.optimizers import SGD
+
 
 INPUT_NODE = 835200
 
@@ -20,10 +28,19 @@ def DataRead(path,L):
               pass
        pass
 
+def Forward(files):
+       hide1=Sequential([
+              Conv2D(filters=48,kernel_size=5,strides=1,padding="same",activation='relu',input_shape=(480,480,1) ),
+              MaxPooling2D(pool_size=(2,2),strides=1,padding="same"),
+              Dropout(rate=0.2)
+              ] )
+       
+       pass
+
 def main():
        files=[]
        DataRead("output/",files)
-       
+       Forward(files)
        pass
 
 if __name__ == '__main__':
