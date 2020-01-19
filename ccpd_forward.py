@@ -8,7 +8,6 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import SGD
 
-
 INPUT_NODE = 835200
 
 provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "警", "学", "O"]
@@ -21,25 +20,26 @@ ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q'
 
 
 def ReadData(path):
-       L=[]
+       labels=[]
        num=0
        i=0
        if os.path.exists(path):
               for root,dirs,files in os.walk(path):
                      for name in files:
-                            L.append(name)
+                            labels.append(name)
                             num+=1
-              pass
-       train_data=np.zeros((num,480,480,1))
-       while i<len(L):
-              dir=path+str(L[i])
+       labels=np.array(labels)
+       data=np.zeros((num,480,480,1))
+       while i<len(labels):
+              dir=path+str(labels[i])
               image=tf.io.read_file(dir)
               image=tf.image.decode_jpeg(image)
-              image=tf.cast(image,tf.float32)/255.0
-              train_data[i]=image
+              image=tf.cast(image,tf.float64)/255.0
+              data[i]=image
               i+=1
-       return(train_data)
-       pass
+       shape=labels.shape[0]
+       labels=np.reshape(labels,(shape,1))
+       return(data,labels)
 
 def Forward(files):
        model=Sequential()
@@ -57,14 +57,16 @@ def Forward(files):
        model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
+
        return model
 
-       pass
-
 def main():
-       train_data=ReadData("output/")
-       Forward(train_data)
-       pass
+       test_data=ReadData("output/")
+       train_data,train_lables=ReadData("train/")
+
+       model=Forward(test_data)
+       model.fit(train_data,train_lables,epochs=10)
+       
 
 if __name__ == '__main__':
     main()
