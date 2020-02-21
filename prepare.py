@@ -20,7 +20,6 @@ def cut_char_from_plate(pic):
     im = cv2.GaussianBlur(im, (3, 3), 0)                                                             # GaussianBlur
     im=cv2.resize(im, (480, 240))
     ret3, th3 = cv2.threshold(im, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    cv2.imwrite(out, th3)
 
     white = []
     black = []
@@ -40,7 +39,6 @@ def cut_char_from_plate(pic):
         black_sum+=b
         white.append(w)
         black.append(b)
-        print(str(w)+"---------------"+str(b))
     if black_sum>white_sum:
         print("黑底白字")
         arg=False 

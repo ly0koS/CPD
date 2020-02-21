@@ -25,7 +25,7 @@ def main():
     
     for i in files:
         cut_char_from_plate(i)
-        break
+        
 
 if __name__ == '__main__':
     main()
