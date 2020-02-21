@@ -4,18 +4,18 @@ import os
 Path="/home/ly0kos/Car/chepai/images/"
 OUTPUT="/home/ly0kos/Car/chepai/output/"
 
-def find_end(start,end,white,black,arg,width,height):
-    end=start+1
-    for row in range(start+1,width-1):
-        if(white(row)   if  arg else    black(row)>(height*0.95)):
-            end=row
-            break
-    return end
+def find_end(start_,white,black,arg,width,height):
+    end_=start_+1
+    for m in range(start_ + 1, width - 1):
+       if(white[m] if arg else black[m])>(height*0.95):
+           end_=m
+           break
+    return end_
 
 def cut_char_from_plate(pic):
     out=os.path.join(OUTPUT,pic)
-    pic=os.path.join(Path,pic)
-    im = cv2.imread(pic)
+    picture=os.path.join(Path,pic)
+    im = cv2.imread(picture)
     im = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)                                       # RGB2GRAY
     im = cv2.GaussianBlur(im, (3, 3), 0)                                                             # GaussianBlur
     im=cv2.resize(im, (480, 240))
@@ -32,9 +32,9 @@ def cut_char_from_plate(pic):
         w=0                                                                                                                     #WhitePixelInRow
         b=0                                                                                                                     #BlackPixelInRow
         for j in range(height):
-            if th3[i][j] == 255:
+            if th3[j][i] == 255:
                 w += 1
-            if th3[i][j] == 0:
+            if th3[j][i] == 0:
                 b += 1
         white_sum+=w
         black_sum+=b
@@ -51,13 +51,24 @@ def cut_char_from_plate(pic):
     row=1
     start=1
     end=1
+    locate=1
     ###CutProvince###
-    if ((black[row] if   arg    else   white[row])>(height*0.05)):                                                                #ThresholdForChar
-        start=row
-        end=find_end(start,white,black,arg,width,height)
-        row=end
-        if end-start>67:
-            print("End - Start ="+str(end-start))
-            province=th3[1:height,start:end]
-            cv2.imshow("Province",province)
-            cv2.waitKey(0)
+    while row<70:
+        row+=1
+        if ((black[row] if   arg    else   white[row])>(height*0.05)):                                                                #ThresholdForChar
+            start=row
+            end=find_end(start_=start,white=white,black=black,arg=arg,width=width,height=height)
+            row=end
+            if end-start>67:
+                print("End - Start ="+str(end-start))
+                province=th3[1:height,start:end]
+                loc=pic[0:1]
+                loc=loc+str(".jpg")
+                loc=os.path.join(OUTPUT,loc)
+                cv2.imwrite(loc,province)
+                break
+    rest=th3[1:height,end:width]
+    loc=pic[1:7]
+    loc=loc+str(".jpg")
+    loc=os.path.join(OUTPUT,loc)
+    cv2.imwrite(loc,rest)
