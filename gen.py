@@ -12,7 +12,7 @@ city = ['京', '津', '沪', '渝', '冀', '豫', '云', '辽', '黑', '湘', '�
 '吉', '闽', '贵', '粤', '青', '藏', '川', '宁', '琼']
  
 TRAINSIZE = 5000 #生成样本量
-FILE_PATH = 'E:/TF/lpr_imgs/'
+FILE_PATH = '/home/ly0kos/Car/'
 def save(filename, contents):
     with open(filename,'w') as f:
         f.write(contents)
@@ -30,6 +30,7 @@ def random_text(char_set=number + ALPHABET, captcha_size=7):
 def write_label(instr):
     label_filename = os.path.join(FILE_PATH, "chepai/labels.txt")
     with open(label_filename, "a") as f:
+        f.writelines('\n')
         f.writelines(instr + ' ')
  
 font = pygame.font.Font(os.path.join(FILE_PATH, "platech.ttf"), 32) #注意这里Windows和Mac系统使用的方法是不同的
