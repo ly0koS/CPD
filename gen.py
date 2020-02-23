@@ -21,6 +21,7 @@ def random_text(char_set=number + ALPHABET, captcha_size=7):
     rtext = []
     rtext.append(random.choice(city))
     rtext.append(random.choice(ALPHABET))
+    rtext.append(" ")
     for i in range(2, captcha_size):
         c = random.choice(char_set)
         rtext.append(c)
@@ -28,23 +29,26 @@ def random_text(char_set=number + ALPHABET, captcha_size=7):
     return str
  
 def write_label(instr):
-    label_filename = os.path.join(FILE_PATH, "chepai/labels.txt")
+    instr=instr.replace(" ","")
+    label_filename = os.path.join(FILE_PATH, "plate/labels.txt")
     with open(label_filename, "a") as f:
         f.writelines('\n')
         f.writelines(instr + ' ')
  
 font = pygame.font.Font(os.path.join(FILE_PATH, "platech.ttf"), 32) #注意这里Windows和Mac系统使用的方法是不同的
-filepath = os.path.join(FILE_PATH, "chepai/images")
+filepath = os.path.join(FILE_PATH, "plate/images")
 fileformate = ".jpg"
 if not os.path.exists(filepath):
     os.makedirs(filepath)
  
+
 #完全随机产生样本有可能使得某些中文字样本偏少无法得到很好的训练，
 # 可以通过扩大样本生成量来解决，或者其他手段
 for x in range(TRAINSIZE):
     text = random_text()
     # 渲染图片，设置背景颜色和字体样式,前面的颜色是字体颜色
-    ftext = font.render(text, True, (65, 83, 130), (255, 255, 255))
+    ftext = font.render(text, True, (0, 0, 0), (255, 255, 255))
+    text=text.replace(" ","")
     filename = filepath + text + fileformate
     # 保存图片
     label = text + fileformate + "," + text
