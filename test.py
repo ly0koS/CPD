@@ -16,7 +16,7 @@ def getFileName(path):
 def main():
     files=[]
     num=0
-    path="/home/ly0kos/Car/chepai/images"
+    path="/home/ly0kos/Car/plate/images"
     if not os.path.exists("output"):
         os.mkdir("../output")
 
@@ -24,8 +24,8 @@ def main():
     print(len(files))
     
     for i in files:
-        cut_char_from_plate(i)
-        
+        get_train_data(i)
 
 if __name__ == '__main__':
+
     main()
