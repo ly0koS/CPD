@@ -14,7 +14,7 @@ def find_end(start, white, black, white_max, black_max, arg, width, height):
     print("Start at pixel = ",start)
     while m-start < 90:
         if (white[m] if arg else black[m]) > (white_max * 0.9 if arg else 0.9 * black_max):
-            if m-start < 67:
+            if m-start < 72:
                 m+=1
             elif ((black[m] if arg else white[m]) > (black_max * 0.15 if arg else 0.15 * white_max)):
                 m+=1
