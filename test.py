@@ -1,6 +1,6 @@
 import os
 from cv2 import cv2
-from prepare import *
+from prepare import get_test_data,get_train_data
 
 def getFileName(path):
     L=[]
