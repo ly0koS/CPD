@@ -10,27 +10,21 @@ city = ['京', '津', '沪', '渝', '冀', '豫', '云', '辽', '黑', '湘', '�
 
 def find_end(start, white, black, white_max, black_max, arg, width, height):
     end = start + 1
-    flag = 1
     m = end
-    while m < width - 1:
-        if (white[m] if arg else black[m]) > (white_max * 0.95 if arg else 0.95 * black_max):
-            test=m
-            for test in range(m, m+20):
-                if ((black[test] if arg else white[test]) > (black_max * 0.10 if arg else 0.10 * white_max)):
-                    flag = 1
-                    m = test
-                else:
-                    flag = 0
-            if flag == 0:
+    print("Start at pixel = ",start)
+    while m-start < 82:
+        if (white[m] if arg else black[m]) > (white_max * 0.9 if arg else 0.9 * black_max):
+            if m-start < 67:
+                m+=1
+            elif ((black[m] if arg else white[m]) > (black_max * 0.1 if arg else 0.1 * white_max)):
+                m+=1
+            else:
                 end = m
                 break
-        elif m-start<95:
-            m+=1
-        
         else:
-            end =m
-            break
-
+            m+=1
+    end=m
+    print("End at piexl = ",end)
     return end
 
 
@@ -65,10 +59,10 @@ def cut_char_from_plate(pic):
         white.append(w)
         black.append(b)
     if black_max > white_max:
-        print("黑底白字")
+        #print("黑底白字")
         arg = False
     else:
-        print("白底黑字")
+        #print("白底黑字")
         arg = True
 
     row = 1
@@ -78,13 +72,13 @@ def cut_char_from_plate(pic):
     ###CutProvince###
     while row < 80:
         row += 1
-        if ((black[row] if arg else white[row]) > (black_max * 0.10 if arg else 0.10 * white_max)):  # ThresholdForChar
+        if ((black[row] if arg else white[row]) > (black_max * 0.1 if arg else 0.1 * white_max)):  # ThresholdForChar
             start = row
             end = find_end(start=start, white=white, black=black, white_max=white_max,
                            black_max=black_max, arg=arg, width=width, height=height)
             row = end
             if end-start >= 65:
-                print("Province_Locate = "+str(end-start))
+                print("Province_Length = "+str(end-start))
                 province = th3[1:height, start:end]
                 return th3, province, height, width, end
 
