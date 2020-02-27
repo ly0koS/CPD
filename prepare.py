@@ -2,11 +2,16 @@ from cv2 import cv2
 import os
 import gc
 
+
 Path = "/home/ly0kos/Car/plate/images/"
 HOME = "/home/ly0kos/Car/plate/"
 city = ['京', '津', '沪', '渝', '冀', '豫', '云', '辽', '黑', '湘', '皖', '鲁', '新', '苏', '浙', '赣', '鄂', '桂', '甘', '晋', '蒙', '陕',
         '吉', '闽', '贵', '粤', '青', '藏', '川', '宁', '琼']
 
+number = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U',
+'V', 'W', 'X', 'Y', 'Z']
 
 def find_end(start, white, black, white_max, black_max, arg, width, height):
     end = start + 1
@@ -82,6 +87,19 @@ def cut_char_from_plate(pic):
                 province = th3[1:height, start:end]
                 return th3, province, height, width, end
 
+def get_province(path,pic):
+    
+
+    th3, province, height, width, end = cut_char_from_plate(pic)
+    
+    name = pic[0:1]
+    name = os.path.join(path, name)
+    name = os.path.join(name, pic)
+    cv2.imwrite(name, province)
+    return end
+
+def get_char(start,path):
+    pass
 
 def get_test_data(pic):
 
@@ -89,23 +107,23 @@ def get_test_data(pic):
 
 
 def get_train_data(pic):
-
     for i in city:
         cityfolder = os.path.join(HOME, "train/city", i)
         if not os.path.exists(cityfolder):
             os.makedirs(cityfolder)
+    for i in ALPHABET:
+        folder=os.path.join(HOME, "train/rest", i)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+    for i in number:
+        folder=os.path.join(HOME, "train/rest", i)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+    
+    city_path=os.path.join(HOME, "train/city")
+    char_path=os.path.join(HOME, "train/rest")
 
-    th3, province, height, width, end = cut_char_from_plate(pic)
-    name = pic[0:1]
-    name = os.path.join(HOME, "train/city", name)
-    name = os.path.join(name, pic)
-    cv2.imwrite(name, province)
-    rest = th3[1:height, end:width]
-    name = pic[1:7]
-    loc = os.path.join(HOME, "train", "rest")
-    if not os.path.exists(loc):
-        os.makedirs(loc)
-    name = os.path.join(loc, name)
-    name = name+".jpg"
-    cv2.imwrite(name, rest)
-    gc.collect()
+    start=get_province(city_path,pic)
+
+    get_char(start,char_path,pic)
+    
