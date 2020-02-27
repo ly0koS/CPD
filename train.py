@@ -9,7 +9,8 @@ import random
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
-BATCH_SIZE = 32
+SAVE_PATH="/home/ly0kos/Car/model/"
+BATCH_SIZE = 20
 
 def load_and_preprocess_image(path):
     image = tf.io.read_file(path)
@@ -46,37 +47,54 @@ def make_dataset(data_root):
     # 当模型在训练的时候，`prefetch` 使数据集在后台取得 batch。
     ds = ds.prefetch(buffer_size=AUTOTUNE)
     steps_per_epoch=tf.math.ceil(len(all_image_paths)/BATCH_SIZE).numpy()
-    return ds,steps_per_epoch
+    return label_to_index,ds,steps_per_epoch
 
 def Forward():
        model=tf.keras.Sequential()
-       model.add(tf.keras.layers.Conv2D(64,(3,3),activation="relu",padding='same',input_shape=(64,64,3),use_bias=True,kernel_initializer="he_normal"))
+       model.add(tf.keras.layers.Conv2D(8,(3,3),activation="relu",padding='same',input_shape=(64,64,3),kernel_initializer="he_normal"))
        model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Conv2D(96,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
+       model.add(tf.keras.layers.Dropout(0.2))
+       model.add(tf.keras.layers.Conv2D(16,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
        model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Conv2D(96,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
+       model.add(tf.keras.layers.Conv2D(32,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
+       model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
+       model.add(tf.keras.layers.Conv2D(64,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
        model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
        model.add(tf.keras.layers.Conv2D(128,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
+       model.add(tf.keras.layers.Dropout(0.2))
        model.add(tf.keras.layers.Flatten())
-       model.add(tf.keras.layers.Dense(128, activation='relu'))
-       model.add(tf.keras.layers.Dense(10, activation='softmax'))
+       model.add(tf.keras.layers.Dense(64, activation='relu'))
+       model.add(tf.keras.layers.Dense(32, activation='softmax'))
 
        return model
 
 
 
 data_root = os.path.join(PATH, "plate/train/city")
-ds,steps_per_epoch = make_dataset(data_root)
+label,ds,steps_per_epoch = make_dataset(data_root)
 
 
 
-model=Forward()
-model.compile(optimizer='rmsprop',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-              metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+Han_model=Forward()
+Han_model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
+
+save_model=os.path.join(SAVE_PATH,"Han/")
+
+Han_model.summary()
+
+Han_model.fit(ds,epochs=25,steps_per_epoch=steps_per_epoch)
+
+Han_model.save(save_model,overwrite=True) 
 
 
 
-model.fit(ds,epochs=20,steps_per_epoch=steps_per_epoch)
+""" img=os.path.join("/home/ly0kos/Car/plate/train/city/鄂","鄂A529HI.jpg")
+img=load_and_preprocess_image(img)
+img = np.expand_dims(img, axis=0)
+predict=Han_model.predict_classes(img)
 
-model.save("/home/ly0kos/Car/model/",overwrite=True)
+for (k,v) in label.items():
+    if v==predict:
+        print(k) """
