@@ -11,7 +11,7 @@ ALPHABET = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P'
 city = ['京', '津', '沪', '渝', '冀', '豫', '云', '辽', '黑', '湘', '皖', '鲁', '新', '苏', '浙', '赣', '鄂', '桂', '甘', '晋', '蒙', '陕',
 '吉', '闽', '贵', '粤', '青', '藏', '川', '宁', '琼']
  
-TRAINSIZE = 5000 #生成样本量
+TRAINSIZE = 10000 #生成样本量
 FILE_PATH = '/home/ly0kos/Car/'
 def save(filename, contents):
     with open(filename,'w') as f:

@@ -2,6 +2,7 @@ from cv2 import cv2
 import os
 import gc
 
+
 Path = "/home/ly0kos/Car/plate/images/"
 HOME = "/home/ly0kos/Car/plate/"
 city = ['京', '津', '沪', '渝', '冀', '豫', '云', '辽', '黑', '湘', '皖', '鲁', '新', '苏', '浙', '赣', '鄂', '桂', '甘', '晋', '蒙', '陕',
