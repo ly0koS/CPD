@@ -3,6 +3,7 @@ from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
 from cv2 import cv2
+import numpy as np
 import os
 from math import random
 
@@ -20,5 +21,12 @@ chars = ["京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "
              ]
 
 class GenPlate():
-    def __init__(self,fontZh,fontEn):
+    def __init__(self,Zhttf,Enttf):
+        self.fontZh=ImageFont.truetype(Zhttf,43,0)
+        self.fontEn=ImageFont.truetype(Enttf,60,0)
+        self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
+        self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
+        self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
         
+    def draw(self,val):
+        pass
