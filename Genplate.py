@@ -5,7 +5,6 @@ from PIL import ImageDraw
 from cv2 import cv2
 import numpy as np
 import os
-from math import random
 
 index = {"京": 0, "沪": 1, "津": 2, "渝": 3, "冀": 4, "晋": 5, "蒙": 6, "辽": 7, "吉": 8, "黑": 9, "苏": 10, "浙": 11, "皖": 12,
          "闽": 13, "赣": 14, "鲁": 15, "豫": 16, "鄂": 17, "湘": 18, "粤": 19, "桂": 20, "琼": 21, "川": 22, "贵": 23, "云": 24,
@@ -30,3 +29,25 @@ class GenPlate():
         
     def draw(self,val):
         pass
+
+    def genStr(self):
+        Str=""
+        pos=0
+        while (pos<7):
+            if pos==0:
+                Str += chars[np.randint(0,31)]                                      #Chinese Char
+                pos +=1
+            elif pos==1:
+                Str+=chars[np.randint(41,65)]                                      #EnglishAlphabet
+                pos+=1
+            else:
+                Str+=chars[np.randint(31,41)]
+                pos+=1
+        return Str
+
+    def genBatch(self,batchSize,outputPath,size):
+        if not os.path.exists(outputPath):
+            os.mkdir(outputPath)
+        for i in range(batchSize):
+            plateStr=self.genStr()
+            #TODO:GenerateImg
