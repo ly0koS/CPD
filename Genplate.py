@@ -26,8 +26,21 @@ class GenPlate():
         self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
-        
-    def draw(self,val):
+
+    def GenZh(self,font,text):
+        pass
+
+    def GenEN(self,font,text):
+        pass
+
+    def draw(self,text):
+        offset= 2 
+
+        self.img[0:70,offset+8:offset+8+23]= self.GenZh(self.fontZh,text[0])
+        self.img[0:70,offset+8+23+6:offset+8+23+6+23]= self.GenEN(self.fontEn,text[1])
+        for i in range(5):
+            base = offset+8+23+6+23+17 +i*23 + i*6 
+            self.img[0:70, base  : base+23]= self.GenEN(self.fontEn,text[i+2])
         pass
 
     def genStr(self):
@@ -45,9 +58,13 @@ class GenPlate():
                 pos+=1
         return Str
 
+    def generate(self,text):
+        pass
+
     def genBatch(self,batchSize,outputPath,size):
         if not os.path.exists(outputPath):
             os.mkdir(outputPath)
         for i in range(batchSize):
             plateStr=self.genStr()
             #TODO:GenerateImg
+            img=self.generate(plateStr)
