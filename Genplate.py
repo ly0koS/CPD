@@ -79,10 +79,12 @@ class GenPlate:
             os.mkdir(outputPath)
         for i in range(batchSize):
             plateStr=self.genStr()
-            #TODO:GenerateImg
             img=self.generate(plateStr)
+            img = cv2.resize(img,size)
+            filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
+            cv2.imwrite(filename, img)
             
             
 
 G = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
-G.genBatch(2,"/home/ly0kos/Car/temp",(272,72)) 
+G.genBatch(1000,"/home/ly0kos/Car/temp",(272,72)) 
