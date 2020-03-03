@@ -55,17 +55,24 @@ class GenPlate:
     def genStr(self):
         Str=""
         pos=0
+        label=[]
         while (pos<7):
             if pos==0:
-                Str += chars[np.random.randint(0,31)]                                      #Chinese Char
+                temp=np.random.randint(0,31)
+                Str += chars[temp]                                                                               #Chinese Char
                 pos +=1
+                label.append(temp)
             elif pos==1:
-                Str+=chars[np.random.randint(41,65)]                                      #EnglishAlphabet
+                temp=np.random.randint(41,65)
+                Str+=chars[temp]                                                                                 #EnglishAlphabet
                 pos+=1
+                label.append(temp)
             else:
-                Str+=chars[np.random.randint(31,41)]
+                temp=np.random.randint(31,41)
+                Str+=chars[temp]
                 pos+=1
-        return Str
+                label.append(temp)
+        return label,Str
 
     def generate(self,text):
         plate=self.draw(text)
@@ -80,11 +87,11 @@ class GenPlate:
         if not os.path.exists(outputPath):
             os.mkdir(outputPath)
         for i in range(batchSize):
-            plateStr=self.genStr()
+            num,plateStr=self.genStr()
             img=self.generate(plateStr)
             img = cv2.resize(img,size)
             data.append(img)
-            label.append(plateStr)
+            label.append(num)
             """filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
             cv2.imwrite(filename, img)"""
         return data,label
