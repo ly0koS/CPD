@@ -28,10 +28,19 @@ class GenPlate():
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
 
     def GenZh(self,font,text):
-        pass
+        img=Image.new("RGB",(45,70),(255,255,255))
+        draw=ImageDraw.Draw(img)
+        draw.text((0,3),text,(0,0,0),font=font)
+        img=img.resize((23,70))
+        img=np.array(img)
+        return img
 
     def GenEN(self,font,text):
-        pass
+        img=Image.new("RGB",(23,70),(255,255,255))
+        draw=ImageDraw.Draw(img)
+        draw.text((0,2),text,(0,0,0),font=font)
+        img=np.array(img)
+        return img
 
     def draw(self,text):
         offset= 2 
