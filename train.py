@@ -15,14 +15,15 @@ PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
 BATCH_SIZE = 20
 
-class PlateData(tf.data.Dataset):
-    def __init__(self,count, num_label, height, width):
-        self.genplate = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/font/platechar.ttf')
-        self.count = count
-        self.height = height
-        self.width = width
-        data,label=self.genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
-        
+def PlateData(count, height, width):
+    genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
+    data=[]
+    label=[]
+    data,label=genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
+    data=np.asarray(data)
+    label=np.asarray(label)
+    dataset=tf.data.Dataset.from_tensor_slices((images,label))
+    return dataset    
         
                 
 
