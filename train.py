@@ -23,7 +23,7 @@ def PlateData(count, height, width):
     data=np.asarray(data)
     label=np.asarray(label)
     dataset=tf.data.Dataset.from_tensor_slices((data,label))
-    dataset=dataset.shuffle(buffer_size=10)
+    dataset=dataset.shuffle(buffer_size=1000)
     dataset=dataset.batch(BATCH_SIZE)
     return dataset    
         
@@ -52,11 +52,17 @@ def Forward():
     
     return model
 
-dataset=PlateData(10000,30,120)
+dataset=PlateData(10000,64,64)
 
+model=Forward()
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
 
+model.fit(dataset,epochs=5)
 
-print(dataset)
+"""save_model=os.path.join(SAVE_PATH,"Han/")"""
+
 
 
 
