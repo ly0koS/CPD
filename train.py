@@ -15,42 +15,22 @@ PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
 BATCH_SIZE = 20
 
-def load_and_preprocess_image(path):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_jpeg(image,channels=3)
-    image = tf.image.resize(image, [64, 64])
-    image /= 255.0  # normalize to [0,1] range
-    return image
-
-
-def make_dataset(data_root):
-    data_root = pathlib.Path(data_root)
-    all_image_paths = list(data_root.glob("*/*"))
-    all_image_paths = [str(p) for p in all_image_paths]
-    random.shuffle(all_image_paths)
-    image_count = len(all_image_paths)
-    print("Loading %d pictures", image_count)
-    label_names = sorted(
-        item.name for item in data_root.glob('*/') if item.is_dir())
-    label_to_index = dict((name, index)
-                          for index, name in enumerate(label_names))
-    all_image_labels = [label_to_index[pathlib.Path(path).parent.name]
-                        for path in all_image_paths]
-
-    path_ds = tf.data.Dataset.from_tensor_slices(all_image_paths)
-    image_ds = path_ds.map(load_and_preprocess_image,
-                           num_parallel_calls=AUTOTUNE)
-    label_ds = tf.data.Dataset.from_tensor_slices(tf.cast(all_image_labels, tf.int64))
-    image_label_ds=tf.data.Dataset.zip((image_ds,label_ds))
-    # 设置一个和数据集大小一致的 shuffle buffer size（随机缓冲区大小）以保证数据
-    # 被充分打乱。
-    ds = image_label_ds.shuffle(buffer_size=image_count)
-    ds = ds.repeat()
-    ds = ds.batch(BATCH_SIZE)
-    # 当模型在训练的时候，`prefetch` 使数据集在后台取得 batch。
-    ds = ds.prefetch(buffer_size=AUTOTUNE)
-    steps_per_epoch=tf.math.ceil(len(all_image_paths)/BATCH_SIZE).numpy()
-    return label_to_index,ds,steps_per_epoch
+class PlateData(tf.data.Dataset):
+    self.genplate = GenPlate("/home/ly0kos/Car/font/platech.ttf",'./home/ly0kos/Car/font/platechar.ttf')
+    self.batch_size = batch_size
+    self.count = count
+    self.height = height
+    self.width = width
+    self.provide_data = [('data', (batch_size, 3, height, width))]
+    self.provide_label = [('softmax_label', (self.batch_size, num_label))]
+    for k in range(self.count / self.batch_size):
+        data=[]
+        label=[]
+        for i in range(self.batch_size):
+                num, img = gen_sample(self.genplate, self.width, self.height)
+                data.append(img)
+                label.append(num)
+        
 
 def Forward():
     input=keras.Input(shape=(64,64,3),name='title')
