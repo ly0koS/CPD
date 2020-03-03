@@ -22,6 +22,7 @@ def PlateData(count, height, width):
     data,label=genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
     data=np.asarray(data)
     label=np.asarray(label)
+    print(label.shape)
     dataset=tf.data.Dataset.from_tensor_slices((data,label))
     dataset=dataset.shuffle(buffer_size=1000)
     dataset=dataset.batch(BATCH_SIZE)
@@ -59,9 +60,9 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
 
-model.fit(dataset,epochs=5)
+#model.fit(dataset,epochs=5)
 
-"""save_model=os.path.join(SAVE_PATH,"Han/")"""
+#save_model=os.path.join(SAVE_PATH,"Han/")
 
 
 
