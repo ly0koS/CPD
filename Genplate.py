@@ -19,7 +19,7 @@ chars = ["京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "
              "Y", "Z"
              ]
 
-class GenPlate():
+class GenPlate:
     def __init__(self,Zhttf,Enttf):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
         self.fontEn=ImageFont.truetype(Enttf,60,0)
@@ -50,25 +50,29 @@ class GenPlate():
         for i in range(5):
             base = offset+8+23+6+23+17 +i*23 + i*6 
             self.img[0:70, base  : base+23]= self.GenEN(self.fontEn,text[i+2])
-        pass
+        return self.img
 
     def genStr(self):
         Str=""
         pos=0
         while (pos<7):
             if pos==0:
-                Str += chars[np.randint(0,31)]                                      #Chinese Char
+                Str += chars[np.random.randint(0,31)]                                      #Chinese Char
                 pos +=1
             elif pos==1:
-                Str+=chars[np.randint(41,65)]                                      #EnglishAlphabet
+                Str+=chars[np.random.randint(41,65)]                                      #EnglishAlphabet
                 pos+=1
             else:
-                Str+=chars[np.randint(31,41)]
+                Str+=chars[np.random.randint(31,41)]
                 pos+=1
         return Str
 
     def generate(self,text):
-        pass
+        plate=self.draw(text)
+        plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
+        plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
+        return plate
+        
 
     def genBatch(self,batchSize,outputPath,size):
         if not os.path.exists(outputPath):
@@ -77,3 +81,8 @@ class GenPlate():
             plateStr=self.genStr()
             #TODO:GenerateImg
             img=self.generate(plateStr)
+            
+            
+
+G = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
+G.genBatch(2,"/home/ly0kos/Car/temp",(272,72)) 
