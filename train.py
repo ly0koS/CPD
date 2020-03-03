@@ -16,20 +16,22 @@ SAVE_PATH="/home/ly0kos/Car/model/"
 BATCH_SIZE = 20
 
 class PlateData(tf.data.Dataset):
-    self.genplate = GenPlate("/home/ly0kos/Car/font/platech.ttf",'./home/ly0kos/Car/font/platechar.ttf')
-    self.batch_size = batch_size
-    self.count = count
-    self.height = height
-    self.width = width
-    self.provide_data = [('data', (batch_size, 3, height, width))]
-    self.provide_label = [('softmax_label', (self.batch_size, num_label))]
-    for k in range(self.count / self.batch_size):
-        data=[]
-        label=[]
-        for i in range(self.batch_size):
+    def __init__(self,count,batch_size, num_label, height, width):
+        self.genplate = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/font/platechar.ttf')
+        self.batch_size = batch_size
+        self.count = count
+        self.height = height
+        self.width = width
+        self.provide_data = [('data', (batch_size, 3, height, width))]
+        self.provide_label = [('softmax_label', (self.batch_size, num_label))]
+        for k in range(self.count / self.batch_size):
+            data = []
+            label = []
+            for i in range(self.batch_size):
                 num, img = gen_sample(self.genplate, self.width, self.height)
                 data.append(img)
                 label.append(num)
+        
         
 
 def Forward():
