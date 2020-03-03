@@ -83,13 +83,13 @@ class GenPlate:
             plateStr=self.genStr()
             img=self.generate(plateStr)
             img = cv2.resize(img,size)
-            data=data.append(img)
-            label=label.append(plateStr)
+            data.append(img)
+            label.append(plateStr)
             """filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
             cv2.imwrite(filename, img)"""
         return data,label
             
             
 
-G = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
+G = GenPlate("/home/ly0kos/Car/font/platech.ttf","/home/ly0kos/Car/font/platechar.ttf")
 G.genBatch(1000,"/home/ly0kos/Car/temp",(272,72)) 
