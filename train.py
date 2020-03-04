@@ -18,12 +18,35 @@ BATCH_SIZE = 20
 def PlateData(count, height, width):
     genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
     data=[]
-    label=[]
+    labelZh=np.empty((count,1,1))
+    labelCh1=np.empty((count,1,1))
+    labelCh2=np.empty((count,1,1))
+    labelCh3=np.empty((count,1,1))
+    labelCh4=np.empty((count,1,1))
+    labelCh5=np.empty((count,1,1))
+    labelCh6=np.empty((count,1,1))
     data,label=genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
     data=np.asarray(data)
-    #label=np.asarray(label)
-    print(label.shape)
-    dataset=tf.data.Dataset.from_tensor_slices((data,label))
+    for i in range(0,count):
+        labelZh[i]=label[i][0]
+        labelCh1[i]=label[i][1]
+        labelCh2[i]=label[i][2]
+        labelCh3[i]=label[i][3]
+        labelCh4[i]=label[i][4]
+        labelCh5[i]=label[i][5]
+        labelCh6[i]=label[i][6]
+    dataset=tf.data.Dataset.from_tensor_slices((
+        data,
+        {
+            'dense': labelZh,
+            'dense_1': labelCh1,
+            'dense_2': labelCh2,
+            'dense_3': labelCh3,
+            'dense_4': labelCh4,
+            'dense_5': labelCh5,
+            'dense_6': labelCh6
+        }
+        ))
     dataset=dataset.shuffle(buffer_size=1000)
     dataset=dataset.batch(BATCH_SIZE)
     return dataset    
@@ -60,7 +83,7 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
 
-#model.fit(dataset,epochs=5)
+model.fit(dataset,epochs=5)
 
 #save_model=os.path.join(SAVE_PATH,"Han/")
 
