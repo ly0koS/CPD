@@ -94,9 +94,8 @@ model.compile(optimizer='adam',
 steps=tf.math.ceil(10000/BATCH_SIZE).numpy()
 model.fit(dataset,steps_per_epoch=steps,epochs=20)
 
-#save_model=os.path.join(SAVE_PATH,"Han/")
+save_model=os.path.join(SAVE_PATH,"1/")
 
-
-
+tf.saved_model.save(model,save_model)
 
 
