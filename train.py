@@ -13,7 +13,7 @@ from Genplate import *
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
-BATCH_SIZE = 20
+BATCH_SIZE = 32
 
 def PlateData(count, height, width):
     genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
@@ -51,7 +51,6 @@ def PlateData(count, height, width):
     dataset=dataset.batch(BATCH_SIZE)
     return dataset    
         
-                
 
 def Forward():
     input=keras.Input(shape=(64,64,3),name='title')
@@ -64,14 +63,19 @@ def Forward():
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
-    x=layers.Dropout(0.25)(x)
-    output_Zh=layers.Dense(32)(x)
-    output_1=layers.Dense(34)(x)
-    output_2=layers.Dense(34)(x)
-    output_3=layers.Dense(34)(x)
-    output_4=layers.Dense(34)(x)
-    output_5=layers.Dense(34)(x)
-    output_6=layers.Dense(34)(x)
+    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Dropout(0.20)(x)
+    x=layers.Flatten()(x)
+    output_Zh=layers.Dense(65)(x)
+    output_1=layers.Dense(65)(x)
+    output_2=layers.Dense(65)(x)
+    output_3=layers.Dense(65)(x)
+    output_4=layers.Dense(65)(x)
+    output_5=layers.Dense(65)(x)
+    output_6=layers.Dense(65)(x)
     model=keras.Model(inputs=input,outputs=[output_Zh,output_1,output_2,output_3,output_4,output_5,output_6])
     
     return model
@@ -80,10 +84,10 @@ dataset=PlateData(10000,64,64)
 
 model=Forward()
 model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
+              loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+              metrics=["accuracy"]) 
 
-model.fit(dataset,epochs=5)
+model.fit(dataset,epochs=500)
 
 #save_model=os.path.join(SAVE_PATH,"Han/")
 
