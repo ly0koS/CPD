@@ -13,7 +13,7 @@ from Genplate import *
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 
 def PlateData(count, height, width):
     genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
@@ -80,11 +80,11 @@ def Forward():
     
     return model
 
-dataset=PlateData(10000,64,64)
+dataset=PlateData(500000,64,64)
 
 model=Forward()
 model.compile(optimizer='adam',
-              loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True,name="loss"),
               metrics=["accuracy"]) 
 
 model.fit(dataset,epochs=500)
