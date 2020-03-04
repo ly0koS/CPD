@@ -83,7 +83,7 @@ class GenPlate:
 
     def genBatch(self,batchSize,outputPath,size):
         data=[]
-        label=[]
+        label=np.empty([1,7,batchSize])
         if not os.path.exists(outputPath):
             os.mkdir(outputPath)
         for i in range(batchSize):
@@ -91,9 +91,9 @@ class GenPlate:
             img=self.generate(plateStr)
             img = cv2.resize(img,size)
             data.append(img)
-            label.append(num)
-            """filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
-            cv2.imwrite(filename, img)"""
+            np.append(label,np.asarray(num))
+            #filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
+            #cv2.imwrite(filename, img)
         return data,label
             
             

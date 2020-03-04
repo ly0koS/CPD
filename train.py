@@ -21,7 +21,7 @@ def PlateData(count, height, width):
     label=[]
     data,label=genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
     data=np.asarray(data)
-    label=np.asarray(label)
+    #label=np.asarray(label)
     print(label.shape)
     dataset=tf.data.Dataset.from_tensor_slices((data,label))
     dataset=dataset.shuffle(buffer_size=1000)
