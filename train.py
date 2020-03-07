@@ -39,13 +39,13 @@ def PlateData(count, height, width):
     dataset=tf.data.Dataset.from_tensor_slices((
         data,
         {
-            'dense_1': labelZh,
-            'dense_2': labelCh1,
-            'dense_3': labelCh2,
-            'dense_4': labelCh3,
-            'dense_5': labelCh4,
-            'dense_6': labelCh5,
-            'dense_7': labelCh6
+            'output_Zh': labelZh,
+            'output_Ch1': labelCh1,
+            'output_Ch2': labelCh2,
+            'output_Ch3': labelCh3,
+            'output_Ch4': labelCh4,
+            'output_Ch5': labelCh5,
+            'output_Ch6': labelCh6
         }
         ))
     dataset=dataset.shuffle(buffer_size=1000)
@@ -68,18 +68,17 @@ def Forward():
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(128,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
-    x=layers.Conv2D(256,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.Conv2D(128,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.20)(x)
     x=layers.Flatten()(x)
-    x=layers.Dense(120,activation="relu")(x)
-    output_Zh=layers.Dense(65,activation="softmax")(x)
-    output_1=layers.Dense(65,activation="softmax")(x)
-    output_2=layers.Dense(65,activation="softmax")(x)
-    output_3=layers.Dense(65,activation="softmax")(x)
-    output_4=layers.Dense(65,activation="softmax")(x)
-    output_5=layers.Dense(65,activation="softmax")(x)
-    output_6=layers.Dense(65,activation="softmax")(x)
+    output_Zh=layers.Dense(65,activation="softmax",name="output_Zh")(x)
+    output_1=layers.Dense(65,activation="softmax",name="output_Ch1")(x)
+    output_2=layers.Dense(65,activation="softmax",name="output_Ch2")(x)
+    output_3=layers.Dense(65,activation="softmax",name="output_Ch3")(x)
+    output_4=layers.Dense(65,activation="softmax",name="output_Ch4")(x)
+    output_5=layers.Dense(65,activation="softmax",name="output_Ch5")(x)
+    output_6=layers.Dense(65,activation="softmax",name="output_Ch6")(x)
     model=keras.Model(inputs=input,outputs=[output_Zh,output_1,output_2,output_3,output_4,output_5,output_6])
     
     return model
@@ -92,6 +91,11 @@ model.compile(optimizer='adam',
               loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
               metrics=["accuracy"]) 
 steps=tf.math.ceil(10000/BATCH_SIZE).numpy()
+
+keras.utils.plot_model(model, 'model.png', show_shapes=True)
+
+model.summary()
+
 model.fit(dataset,steps_per_epoch=steps,epochs=20)
 
 save_model=os.path.join(SAVE_PATH,"1/")
