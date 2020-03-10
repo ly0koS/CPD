@@ -19,6 +19,20 @@ chars = ["京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "
              "Y", "Z"
              ]
 
+def R(val):
+    return int(np.random.random()*val)
+
+def rotRandrom(img,factor,shape):
+        src_points=np.float32([[0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]]])              #Original Four Point From input image
+        dst_points=np.float32([[R(factor),R(factor)],[R(factor),shape[0]-R(factor)],
+        [shape[1]-R(factor),R(factor)],[shape[1]-R(factor),shape[0]-R(factor)]])
+        Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
+        output=cv2.warpPerspective(img,Transfer,shape)
+        return output
+
+def GaussBlur(img,level):
+    return cv2.blur(img,(level*2,level*2))
+
 class GenPlate:
     def __init__(self,Zhttf,Enttf):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
@@ -44,7 +58,6 @@ class GenPlate:
 
     def draw(self,text):
         offset= 2 
-
         self.img[0:70,offset+8:offset+8+23]= self.GenZh(self.fontZh,text[0])
         self.img[0:70,offset+8+23+6:offset+8+23+6+23]= self.GenEN(self.fontEn,text[1])
         for i in range(5):
@@ -78,6 +91,8 @@ class GenPlate:
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
+        plate=rotRandrom(plate,10,(plate.shape[1],plate.shape[0]))
+        plate=GaussBlur(plate,1+R(4))
         return plate
         
 
