@@ -27,7 +27,7 @@ class GenPlate:
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
 
-    def random(val):
+    def random(self,val):
         return int(np.random.random()*val)
 
     def GenZh(self,font,text):
@@ -55,13 +55,16 @@ class GenPlate:
             self.img[0:70, base  : base+23]= self.GenEN(self.fontEn,text[i+2])
         return self.img
 
-    def rotRandrom(img,factor,shape):
+    def rotRandrom(self,factor,shape):
         src_points=np.float32([0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]])              #Original Four Point From input image
         dst_points=np.float32([random(factor),random(factor)],[random(factor),shape[0]-random(factor)],
         [shape[1]-random(factor),random(factor)],[shape[1]-random(factor),shape[0]-random(factor)])
         Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
-        output=cv2.warpPerspective(img,Transfer,shape)
+        output=cv2.warpPerspective(self.img,Transfer,shape)
         return output
+
+    def GaussBlur(self,level):
+        return cv2.blur(self.img,(level*2+1,level*2_1))
 
     def genStr(self):
         Str=""
@@ -89,6 +92,8 @@ class GenPlate:
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
+        plate=rotRandrom(plate,20,(plate.shape[1],plate.shape[0]))
+        plate=GaussBlur(plate,1+random(4))
         return plate
         
 
