@@ -19,6 +19,20 @@ chars = ["京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "
              "Y", "Z"
              ]
 
+def R(val):
+    return int(np.random.random()*val)
+
+def rotRandrom(img,factor,shape):
+        src_points=np.float32([[0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]]])              #Original Four Point From input image
+        dst_points=np.float32([[R(factor),R(factor)],[R(factor),shape[0]-R(factor)],
+        [shape[1]-R(factor),R(factor)],[shape[1]-R(factor),shape[0]-R(factor)]])
+        Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
+        output=cv2.warpPerspective(img,Transfer,shape)
+        return output
+
+def GaussBlur(img,level):
+    return cv2.blur(img,(level*2,level*2))
+
 class GenPlate:
     def __init__(self,Zhttf,Enttf):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
@@ -26,9 +40,6 @@ class GenPlate:
         self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
-
-    def random(self,val):
-        return int(np.random.random()*val)
 
     def GenZh(self,font,text):
         img=Image.new("RGB",(45,70),(255,255,255))
@@ -47,24 +58,12 @@ class GenPlate:
 
     def draw(self,text):
         offset= 2 
-
         self.img[0:70,offset+8:offset+8+23]= self.GenZh(self.fontZh,text[0])
         self.img[0:70,offset+8+23+6:offset+8+23+6+23]= self.GenEN(self.fontEn,text[1])
         for i in range(5):
             base = offset+8+23+6+23+17 +i*23 + i*6 
             self.img[0:70, base  : base+23]= self.GenEN(self.fontEn,text[i+2])
         return self.img
-
-    def rotRandrom(self,factor,shape):
-        src_points=np.float32([0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]])              #Original Four Point From input image
-        dst_points=np.float32([random(factor),random(factor)],[random(factor),shape[0]-random(factor)],
-        [shape[1]-random(factor),random(factor)],[shape[1]-random(factor),shape[0]-random(factor)])
-        Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
-        output=cv2.warpPerspective(self.img,Transfer,shape)
-        return output
-
-    def GaussBlur(self,level):
-        return cv2.blur(self.img,(level*2+1,level*2_1))
 
     def genStr(self):
         Str=""
@@ -92,8 +91,8 @@ class GenPlate:
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
-        plate=rotRandrom(plate,20,(plate.shape[1],plate.shape[0]))
-        plate=GaussBlur(plate,1+random(4))
+        plate=rotRandrom(plate,10,(plate.shape[1],plate.shape[0]))
+        plate=GaussBlur(plate,1+R(4))
         return plate
         
 
