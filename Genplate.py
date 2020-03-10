@@ -27,6 +27,9 @@ class GenPlate:
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
 
+    def random(val):
+        return int(np.random.random()*val)
+
     def GenZh(self,font,text):
         img=Image.new("RGB",(45,70),(255,255,255))
         draw=ImageDraw.Draw(img)
@@ -51,6 +54,14 @@ class GenPlate:
             base = offset+8+23+6+23+17 +i*23 + i*6 
             self.img[0:70, base  : base+23]= self.GenEN(self.fontEn,text[i+2])
         return self.img
+
+    def rotRandrom(img,factor,shape):
+        src_points=np.float32([0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]])              #Original Four Point From input image
+        dst_points=np.float32([random(factor),random(factor)],[random(factor),shape[0]-random(factor)],
+        [shape[1]-random(factor),random(factor)],[shape[1]-random(factor),shape[0]-random(factor)])
+        Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
+        output=cv2.warpPerspective(img,Transfer,shape)
+        return output
 
     def genStr(self):
         Str=""
