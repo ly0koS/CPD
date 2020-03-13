@@ -15,8 +15,8 @@ PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
 BATCH_SIZE = 20
 
-def PlateData(count, height, width):
-    genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
+def PlateData(count, height, width,flag):
+    genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf',flag)
     data=[]
     labelZh=np.empty((count,1,1))
     labelCh1=np.empty((count,1,1))
@@ -48,6 +48,7 @@ def PlateData(count, height, width):
             'output_Ch6': labelCh6
         }
         ))
+        
     dataset=dataset.shuffle(buffer_size=1000)
     dataset=dataset.repeat()
     dataset=dataset.batch(BATCH_SIZE)
@@ -81,8 +82,8 @@ def Forward():
 
 
 def train():
-    dataset=PlateData(10000,64,64)
-
+    dataset=PlateData(10000,64,64,0)
+    
     model=Forward()
     model.compile(optimizer='adam',
                 loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
@@ -97,6 +98,6 @@ def train():
 
     save_model=os.path.join(SAVE_PATH,"1/")
 
-    tf.saved_model.save(model,save_model)
+    model.save(save_model)
 
 
