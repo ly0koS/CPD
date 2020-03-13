@@ -39,7 +39,7 @@ def gen_image_dataset(path):
     img_set=np.asarray(img_set)
     img_set=np.true_divide(img_set,255.0)
 
-    return img_set
+    return img_set,img_path
 
 def getKeysByValue(dictOfElements, valueToFind):
     listOfKeys = str()
@@ -50,21 +50,27 @@ def getKeysByValue(dictOfElements, valueToFind):
             return  listOfKeys
 
 #PlateData(5000,273,76,1)
-test_dataset=gen_image_dataset("/home/ly0kos/Car/temp/")
+test_dataset,img_path=gen_image_dataset("/home/ly0kos/Car/temp/")
 result=model.predict(test_dataset,verbose=1)
 result=np.asarray(result)
 
 
 
-for i in range(0,7):
-    key=np.where(result[i][687]==np.amax(result[i][687]))
-    key=np.asscalar(key[0])
-    key=getKeysByValue(index,key)
-    if i<6:
-        print(key,end=' ')
-    elif i==6:
-        print(key)
-
+for i in range(0,10):
+    path=os.path.join("/home/ly0kos/Car/temp/",img_path[i])
+    image=cv2.imread(path)
+    cv2.imshow("test",image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+    for j in range(0,7):
+            key=np.where(result[j][i]==np.amax(result[j][i]))                                                   #result[charlocate][#plate]
+            key=np.asscalar(key[0])
+            key=getKeysByValue(index,key)
+            if j<6:
+                print(key,end=' ')
+            elif j==6:
+                print(key)
+    
 
 
 

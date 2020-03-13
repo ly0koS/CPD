@@ -94,10 +94,9 @@ def train():
 
     model.summary()
 
-    model.fit(dataset,steps_per_epoch=steps,epochs=20)
+    model.fit(dataset,steps_per_epoch=steps,epochs=40)
 
     save_model=os.path.join(SAVE_PATH,"1/")
 
     model.save(save_model)
-
 
