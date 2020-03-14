@@ -31,20 +31,22 @@ def rotRandrom(img,factor,shape):
         return output
 
 def GaussBlur(img,level):
-    return cv2.blur(img,(level*2,level*2))
+    img=cv2.GaussianBlur(img,(level*2+1,level*2+1),0)
+    cv2.imshow("bg",img)
+    cv2.waitKey()
+    return img
 
 def Add_Env(img,env_set):
     index=R(len(env_set))
     env=cv2.imread(env_set[index])
     env=cv2.resize(env,(img.shape[1],img.shape[0]))
-    bg=(img==0)
-    bg=bg.astype(np.uint8)*255
-    env=cv2.bitwise_and(bg,env)
-    img=cv2.bitwise_or(env,img)
-    cv2.imshow("bg",img)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    for i in range(0,img.shape[1]):
+        for j in range(0,img.shape[0]):
+            if img[j][i].any()==0:
+                img[j][i]=env[j][i]
     return img
+
+
 
 class GenPlate:
     def __init__(self,Zhttf,Enttf,Env_Path):
@@ -109,9 +111,9 @@ class GenPlate:
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
-        plate=rotRandrom(plate,10,(plate.shape[1],plate.shape[0]))
+        plate=rotRandrom(plate,15,(plate.shape[1],plate.shape[0]))
         plate=Add_Env(plate,self.env_path)
-        plate=GaussBlur(plate,1+R(4))
+        plate=GaussBlur(plate,1+R(7))
         return plate
         
 
