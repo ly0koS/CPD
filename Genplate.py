@@ -31,15 +31,35 @@ def rotRandrom(img,factor,shape):
         return output
 
 def GaussBlur(img,level):
-    return cv2.blur(img,(level*2,level*2))
+    img=cv2.GaussianBlur(img,(level*2+1,level*2+1),0)
+    cv2.imshow("bg",img)
+    cv2.waitKey()
+    return img
+
+def Add_Env(img,env_set):
+    index=R(len(env_set))
+    env=cv2.imread(env_set[index])
+    env=cv2.resize(env,(img.shape[1],img.shape[0]))
+    for i in range(0,img.shape[1]):
+        for j in range(0,img.shape[0]):
+            if img[j][i].any()==0:
+                img[j][i]=env[j][i]
+    return img
+
+
 
 class GenPlate:
-    def __init__(self,Zhttf,Enttf,flag):
+    def __init__(self,Zhttf,Enttf,Env_Path,flag):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
         self.fontEn=ImageFont.truetype(Enttf,60,0)
         self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
+        self.env_path=[]
+        for root,dir,filename in os.walk(Env_Path):
+            for name in filename:
+                path=os.path.join(root,name)
+                self.env_path.append(path)
         self.save_flag=flag
 
     def GenZh(self,font,text):
@@ -92,8 +112,9 @@ class GenPlate:
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
-        plate=rotRandrom(plate,10,(plate.shape[1],plate.shape[0]))
-        plate=GaussBlur(plate,1+R(4))
+        plate=rotRandrom(plate,15,(plate.shape[1],plate.shape[0]))
+        plate=Add_Env(plate,self.env_path)
+        plate=GaussBlur(plate,1+R(7))
         return plate
         
 
@@ -112,6 +133,3 @@ class GenPlate:
                 filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
                 cv2.imwrite(filename, img)
         return data,label
-            
-            
-
