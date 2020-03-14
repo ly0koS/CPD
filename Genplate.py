@@ -49,7 +49,7 @@ def Add_Env(img,env_set):
 
 
 class GenPlate:
-    def __init__(self,Zhttf,Enttf,Env_Path):
+    def __init__(self,Zhttf,Enttf,Env_Path,flag):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
         self.fontEn=ImageFont.truetype(Enttf,60,0)
         self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
@@ -60,6 +60,7 @@ class GenPlate:
             for name in filename:
                 path=os.path.join(root,name)
                 self.env_path.append(path)
+        self.save_flag=flag
 
     def GenZh(self,font,text):
         img=Image.new("RGB",(45,70),(255,255,255))
@@ -128,11 +129,7 @@ class GenPlate:
             img = cv2.resize(img,size)
             data.append(img)
             label[i]=num
-            #filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
-            #cv2.imwrite(filename, img)
+            if self.save_flag==1:
+                filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
+                cv2.imwrite(filename, img)
         return data,label
-            
-            
-
-G = GenPlate("/home/ly0kos/Car/font/platech.ttf","/home/ly0kos/Car/font/platechar.ttf","/home/ly0kos/Car/ENV")
-G.genBatch(1000,"/home/ly0kos/Car/temp",(272,72)) 
