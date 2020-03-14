@@ -57,15 +57,15 @@ def PlateData(count, height, width,flag):
         
 
 def Forward():
-    input=keras.Input(shape=(64,64,3),name='title')
-    x=layers.Conv2D(8,3,activation="relu",padding='same',kernel_initializer="he_normal")(input)
+    input=keras.Input(shape=(128,128,3),name='title')
+    x=layers.Conv2D(16,3,activation="relu",padding='same',kernel_initializer="he_normal")(input)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.25)(x)
-    x=layers.Conv2D(16,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
-    x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(32,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Conv2D(128,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.20)(x)
     x=layers.Flatten()(x)
@@ -82,7 +82,7 @@ def Forward():
 
 
 def train():
-    dataset=PlateData(10000,64,64,0)
+    dataset=PlateData(10000,128,128,0)
     
     model=Forward()
     model.compile(optimizer='adam',
@@ -94,7 +94,7 @@ def train():
 
     model.summary()
 
-    model.fit(dataset,steps_per_epoch=steps,epochs=40)
+    model.fit(dataset,steps_per_epoch=steps,epochs=20)
 
     save_model=os.path.join(SAVE_PATH,"1/")
 
