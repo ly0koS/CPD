@@ -9,9 +9,9 @@ Zh={
 }
 
 Char={
-  "a" : 0,"b" : 1,"c" : 2,"d" : 3,"e" : 4,"f" : 5,"g" : 6,"h" : 7,"j" : 8,"k" : 9,"l" : 10,"m" : 11,
-  "n" : 12,"p" : 13,"q" : 14,"r" : 15,"s" : 16,"t" : 17,"u" : 18,"v" : 19,"w" : 20,"x":  21,
-  "y" : 22,"z" : 23,"0" : 24,"1" : 25,"2" : 26,"3" : 27,"4" : 28,"5" : 29,"6" : 30,"7" : 31,
+  "A" : 0,"B" : 1,"C" : 2,"D" : 3,"E" : 4,"F" : 5,"G" : 6,"H" : 7,"J" : 8,"K" : 9,"L" : 10,"M" : 11,
+  "N" : 12,"P" : 13,"Q" : 14,"R" : 15,"S" : 16,"T" : 17,"U" : 18,"V" : 19,"W" : 20,"X":  21,
+  "Y" : 22,"Z" : 23,"0" : 24,"1" : 25,"2" : 26,"3" : 27,"4" : 28,"5" : 29,"6" : 30,"7" : 31,
   "8" : 32,"9" : 33
 }
 
@@ -49,27 +49,42 @@ def load_img(location,folder):
     return image
 
 def load_label(location):
-    wherestart=location.find("-",54)
-    whereend=location.find("-",69)
-    print(location[wherestart:whereend])
+    key_list=[]
+    start=find_char(location,'-',-50,1)
+    key=location[start+1:start+2]
+    key=int(key)+34
+    key_list.append(key)
+    for i in range(0,5):
+        start=find_char(location,'_',start,1)
+        end=find_char(location,'_',start,1)
+        key=location[start+1:end]
+        key=int(key)
+        key_list.append(key)
+    last=find_char(location,'-',start,1)
+    key=location[end+1:last]
+    key=int(key)
+    key_list.append(key)
+    return key_list
 
 def gen_dataset(path):
     img_path=[]
     img_data=[]
-    label_data=[]
     for root,dir,filenames in os.walk(path):
         for name in filenames:
             name=os.path.join(path,name)
             img_path.append(name)
-    file_count=len(img_path)
+    label_data=np.empty((len(img_path),7))
     num=0
     for loc in img_path:
         image=load_img(loc,path)
         image=cv2.resize(image,(128,128))
         img_data.append(image)
+        label=load_label(loc)
+        label=np.asarray(label)
+        label_data[num]=label
+        cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"+str(label)+".jpg",image)
         num+=1
     img_data=np.asarray(img_data)
     return  img_data,label_data
 
 
-gen_dataset("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge")
