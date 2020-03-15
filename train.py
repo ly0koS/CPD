@@ -8,24 +8,24 @@ from tensorflow.keras import layers
 import numpy as np
 from cv2 import cv2
 import random
-from Genplate import *
+from processPicture import gen_dataset
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/Car/model/"
 BATCH_SIZE = 20
 
-def PlateData(count, height, width,flag):
-    genplate=GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf',flag)
+def PlateData(path,height, width):
     data=[]
-    labelZh=np.empty((count,1,1))
-    labelCh1=np.empty((count,1,1))
-    labelCh2=np.empty((count,1,1))
-    labelCh3=np.empty((count,1,1))
-    labelCh4=np.empty((count,1,1))
-    labelCh5=np.empty((count,1,1))
-    labelCh6=np.empty((count,1,1))
-    data,label=genplate.genBatch(count,"/home/ly0kos/Car/temp",(height,width))
+    count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+    labelZh=np.empty((count,1))
+    labelCh1=np.empty((count,1))
+    labelCh2=np.empty((count,1))
+    labelCh3=np.empty((count,1))
+    labelCh4=np.empty((count,1))
+    labelCh5=np.empty((count,1))
+    labelCh6=np.empty((count,1))
+    data,label=gen_dataset(path)
     data=np.asarray(data)
     data=data/255.0
     for i in range(0,count):
@@ -82,7 +82,7 @@ def Forward():
 
 
 def train():
-    dataset=PlateData(10000,128,128,0)
+    dataset=PlateData("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base",128,128)
     
     model=Forward()
     model.compile(optimizer='adam',
@@ -100,3 +100,4 @@ def train():
 
     model.save(save_model)
 
+train()
