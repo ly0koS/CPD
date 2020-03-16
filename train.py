@@ -15,40 +15,11 @@ PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/tensorflow/CPD/model/"
 BATCH_SIZE = 20
 
-def PlateData(path,height, width,count):
+def PlateData(path):
     data=[]
-    labelZh=np.empty((count,1,1))
-    labelCh1=np.empty((count,1,1))
-    labelCh2=np.empty((count,1,1))
-    labelCh3=np.empty((count,1,1))
-    labelCh4=np.empty((count,1,1))
-    labelCh5=np.empty((count,1,1))
-    labelCh6=np.empty((count,1,1))
-    data,label=gen_dataset(path,count,0)
+    
+    dataset=gen_dataset(path,1)
     gc.collect()
-    data=np.asarray(data)
-    data=data/255.0
-    for i in range(0,count):
-        labelZh[i]=label[i][0]
-        labelCh1[i]=label[i][1]
-        labelCh2[i]=label[i][2]
-        labelCh3[i]=label[i][3]
-        labelCh4[i]=label[i][4]
-        labelCh5[i]=label[i][5]
-        labelCh6[i]=label[i][6]
-    dataset=tf.data.Dataset.from_tensor_slices((
-        data,
-        {
-            'output_Zh': labelZh,
-            'output_Ch1': labelCh1,
-            'output_Ch2': labelCh2,
-            'output_Ch3': labelCh3,
-            'output_Ch4': labelCh4,
-            'output_Ch5': labelCh5,
-            'output_Ch6': labelCh6
-        }
-        ))
-        
     dataset=dataset.shuffle(buffer_size=BATCH_SIZE)
     #dataset=dataset.repeat()                                                                                                   #big dataset,disable to prevent OOM
     dataset=dataset.batch(BATCH_SIZE)
@@ -82,11 +53,9 @@ def Forward():
 
 
 def train():
-    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
+    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge"
     count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
-    if count>25000:
-        count=25000
-    dataset=PlateData(path,128,128,count)
+    dataset=PlateData(path)
     
     model=Forward()
     model.compile(optimizer='adam',

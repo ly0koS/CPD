@@ -57,13 +57,13 @@ def getKeysByValue(dictOfElements, valueToFind):
 
 #PlateData(5000,273,76,1)
 count=100
-test_dataset,label_dataset=gen_dataset("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge/",count,2)
+test_dataset=gen_dataset("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge/",2)
 result=model.predict(test_dataset,verbose=1)
 result=np.asarray(result)
 
 
 
-for i in range(0,10):
+""" for i in range(0,10):
     ran=np.random.randint(0,count)
     path=os.path.join("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test",label_dataset[ran]+".jpg")
     image=cv2.imread(path)
@@ -78,7 +78,7 @@ for i in range(0,10):
                 print(key,end=' ')
             elif j==6:
                 print(key)
-    
+     """
 
 
 
