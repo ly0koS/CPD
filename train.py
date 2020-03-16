@@ -9,23 +9,23 @@ import numpy as np
 from cv2 import cv2
 import random
 from processPicture import gen_dataset
-
+import gc
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
-SAVE_PATH="/home/ly0kos/Car/model/"
+SAVE_PATH="/home/ly0kos/tensorflow/CPD/model/"
 BATCH_SIZE = 20
 
-def PlateData(path,height, width):
+def PlateData(path,height, width,count):
     data=[]
-    count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
-    labelZh=np.empty((count,1))
-    labelCh1=np.empty((count,1))
-    labelCh2=np.empty((count,1))
-    labelCh3=np.empty((count,1))
-    labelCh4=np.empty((count,1))
-    labelCh5=np.empty((count,1))
-    labelCh6=np.empty((count,1))
-    data,label=gen_dataset(path)
+    labelZh=np.empty((count,1,1))
+    labelCh1=np.empty((count,1,1))
+    labelCh2=np.empty((count,1,1))
+    labelCh3=np.empty((count,1,1))
+    labelCh4=np.empty((count,1,1))
+    labelCh5=np.empty((count,1,1))
+    labelCh6=np.empty((count,1,1))
+    data,label=gen_dataset(path,count,0)
+    gc.collect()
     data=np.asarray(data)
     data=data/255.0
     for i in range(0,count):
@@ -49,8 +49,8 @@ def PlateData(path,height, width):
         }
         ))
         
-    dataset=dataset.shuffle(buffer_size=1000)
-    dataset=dataset.repeat()
+    dataset=dataset.shuffle(buffer_size=BATCH_SIZE)
+    #dataset=dataset.repeat()                                                                                                   #big dataset,disable to prevent OOM
     dataset=dataset.batch(BATCH_SIZE)
     dataset=dataset.prefetch(buffer_size=AUTOTUNE)
     return dataset    
@@ -82,13 +82,17 @@ def Forward():
 
 
 def train():
-    dataset=PlateData("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base",128,128)
+    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
+    count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+    if count>25000:
+        count=25000
+    dataset=PlateData(path,128,128,count)
     
     model=Forward()
     model.compile(optimizer='adam',
                 loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
                 metrics=["accuracy"]) 
-    steps=tf.math.ceil(10000/BATCH_SIZE).numpy()
+    steps=tf.math.ceil(count/BATCH_SIZE).numpy()
 
     keras.utils.plot_model(model, 'model.png', show_shapes=True)
 
@@ -96,8 +100,5 @@ def train():
 
     model.fit(dataset,steps_per_epoch=steps,epochs=20)
 
-    save_model=os.path.join(SAVE_PATH,"1/")
 
-    model.save(save_model)
-
-train()
+    model.save(SAVE_PATH)

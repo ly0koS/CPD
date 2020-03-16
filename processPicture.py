@@ -1,6 +1,7 @@
 from cv2 import cv2
 import os
 import numpy as np
+import gc
 
 Zh={
   "皖": 0,"沪": 1,"津": 2,"渝": 3,"冀": 4,"晋": 5,"蒙": 6,"辽": 7,"吉": 8,"黑": 9,"苏": 10,"浙": 11,
@@ -66,7 +67,7 @@ def load_label(location):
     key_list.append(key)
     return key_list
 
-def gen_dataset(path):
+def gen_dataset(path,count,write_flag):
     img_path=[]
     img_data=[]
     for root,dir,filenames in os.walk(path):
@@ -75,16 +76,39 @@ def gen_dataset(path):
             img_path.append(name)
     label_data=np.empty((len(img_path),7))
     num=0
+    char_label=[]
     for loc in img_path:
         image=load_img(loc,path)
         image=cv2.resize(image,(128,128))
         img_data.append(image)
-        label=load_label(loc)
+        label=load_label(loc)                                                                                                                                                                   #label of number
         label=np.asarray(label)
         label_data[num]=label
-        cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"+str(label)+".jpg",image)
+        char=getKeysByValue(Zh,label[0]-34)                                                                                                                                   #decode filename
+        for i in range(1,7):
+            char+=getKeysByValue(Char,label[i])
+        char_label.append(char)                                                                                                                                                             #list of decoded filename
+        if write_flag==1:
+            if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"):
+                os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
+            cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"+char+".jpg",image)
+        elif write_flag==2:
+            if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"):
+                os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
+            cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"+char+".jpg",image)
         num+=1
+        if count>1:
+            count-=1
+        else:
+            img_data=np.asarray(img_data)
+            if write_flag==1:
+                return  img_data,label_data
+            elif write_flag==2:
+                return  img_data,char_label
+            else:
+                return  img_data,label_data
     img_data=np.asarray(img_data)
+    gc.collect()
     return  img_data,label_data
 
 

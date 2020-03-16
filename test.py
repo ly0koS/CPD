@@ -1,25 +1,31 @@
 import tensorflow as tf
 from tensorflow import keras
-from train import train,PlateData
+from train import train
 import numpy as np
 import os
 import sys
 from cv2 import cv2
+from processPicture import gen_dataset
 
-Model_Path="/home/ly0kos/Car/model/1/"
+Model_Path="/home/ly0kos/tensorflow/CPD/model/"
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-index = {"京": 0, "沪": 1, "津": 2, "渝": 3, "冀": 4, "晋": 5, "蒙": 6, "辽": 7, "吉": 8, "黑": 9, "苏": 10, "浙": 11, "皖": 12,
-         "闽": 13, "赣": 14, "鲁": 15, "豫": 16, "鄂": 17, "湘": 18, "粤": 19, "桂": 20, "琼": 21, "川": 22, "贵": 23, "云": 24,
-         "藏": 25, "陕": 26, "甘": 27, "青": 28, "宁": 29, "新": 30, "0": 31, "1": 32, "2": 33, "3": 34, "4": 35, "5": 36,
-         "6": 37, "7": 38, "8": 39, "9": 40, "A": 41, "B": 42, "C": 43, "D": 44, "E": 45, "F": 46, "G": 47, "H": 48,
-         "J": 49, "K": 50, "L": 51, "M": 52, "N": 53, "P": 54, "Q": 55, "R": 56, "S": 57, "T": 58, "U": 59, "V": 60,
-         "W": 61, "X": 62, "Y": 63, "Z": 64}
+
+index={
+  "A" : 0,"B" : 1,"C" : 2,"D" : 3,"E" : 4,"F" : 5,"G" : 6,"H" : 7,"J" : 8,"K" : 9,"L" : 10,"M" : 11,
+  "N" : 12,"P" : 13,"Q" : 14,"R" : 15,"S" : 16,"T" : 17,"U" : 18,"V" : 19,"W" : 20,"X":  21,
+  "Y" : 22,"Z" : 23,"0" : 24,"1" : 25,"2" : 26,"3" : 27,"4" : 28,"5" : 29,"6" : 30,"7" : 31,
+  "8" : 32,"9" : 33,
+  "皖": 34,"沪": 35,"津": 36,"渝": 37,"冀": 38,"晋": 39,"蒙": 40,"辽": 41,"吉": 42,"黑": 43,"苏": 44,"浙": 45,
+  "京": 46,"闽": 47,"赣": 48,"鲁": 49,"豫": 50,"鄂": 51,"湘": 52,"粤": 53,"桂": 54,"琼": 55,
+  "川": 56,"贵": 57,"云": 58,"西": 59,"陕": 60,"甘": 61,"青": 62,"宁": 63,"新": 64
+}
 
 try:
     model=keras.models.load_model(Model_Path)
 except :
     print("load Model Error!\nTrying to train first!\n")
     train()
+    model=keras.models.load_model(Model_Path)
 
 
 
@@ -50,20 +56,22 @@ def getKeysByValue(dictOfElements, valueToFind):
             return  listOfKeys
 
 #PlateData(5000,273,76,1)
-test_dataset,img_path=gen_image_dataset("/home/ly0kos/Car/temp/")
+count=100
+test_dataset,label_dataset=gen_dataset("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge/",count,2)
 result=model.predict(test_dataset,verbose=1)
 result=np.asarray(result)
 
 
 
 for i in range(0,10):
-    path=os.path.join("/home/ly0kos/Car/temp/",img_path[i])
+    ran=np.random.randint(0,count)
+    path=os.path.join("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test",label_dataset[ran]+".jpg")
     image=cv2.imread(path)
     cv2.imshow("test",image)
     cv2.waitKey()
     cv2.destroyAllWindows()
     for j in range(0,7):
-            key=np.where(result[j][i]==np.amax(result[j][i]))                                                   #result[charlocate][#plate]
+            key=np.where(result[j][ran]==np.amax(result[j][ran]))                                                   #result[charlocate][#plate]
             key=np.asscalar(key[0])
             key=getKeysByValue(index,key)
             if j<6:
