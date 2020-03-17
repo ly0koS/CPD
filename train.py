@@ -17,7 +17,6 @@ BATCH_SIZE = 20
 
 def PlateData(path):
     data=[]
-    
     dataset=gen_dataset(path,1)
     gc.collect()
     dataset=dataset.shuffle(buffer_size=BATCH_SIZE)
@@ -53,7 +52,7 @@ def Forward():
 
 
 def train():
-    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge"
+    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_rotate"
     count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
     dataset=PlateData(path)
     

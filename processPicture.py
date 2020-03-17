@@ -81,22 +81,11 @@ def find_label(location):
     key_list.append(key)
     return key_list
 
-def load_label(location):
+def load_label(filename):
     key_list = []
-    start = find_char(location,"[",0,1)
-    key = location[start+1:start+3]
-    key=int(key)
-    key_list.append(key)
-    for i in range(0, 5):
-        start = find_char(location, ' ', start+2, 1)
-        end = find_char(location, ' ', start, 1)
-        key = location[start+1:end]
-        key = int(key)
-        key_list.append(key)
-    last = find_char(location, '-', start, 1)
-    key = location[end+1:last]
-    key = int(key)
-    key_list.append(key)
+    key_list.append(Zh[filename[0]]+34)
+    for i in range(0,6):
+        key_list.append(Char[filename[i+1]])
     return key_list
 
 def preprocess(img_path, path, write_path,write_flag):
@@ -110,16 +99,8 @@ def preprocess(img_path, path, write_path,write_flag):
             char += getKeysByValue(Char, label[i])
         if not os.path.exists(write_path):
             os.mkdir(write_path)
-        if write_flag == 1:
-            name=str(label)
-            filename=os.path.join(write_path,name+".jpg")
-            cv2.imwrite(filename, image)
-        elif write_flag == 2:
-            filename=os.path.join(write_path,char+".jpg")
-            cv2.imwrite(filename, image)
-        else:
-            print("Wrong FLAG!\nInput:1 to Train\n2 to Test")
-            sys.exit()
+        filename=os.path.join(write_path,char+".jpg")
+        cv2.imwrite(filename, image)
         num += 1
 
 
@@ -152,12 +133,14 @@ def gen_dataset(path, write_flag):
         write_path = "/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"
     preprocess(img_path, path, write_path,write_flag)
     all_image_paths=[]
+    file_name=[]
     for root, dir, filenames in os.walk(write_path):
         for name in filenames:
+            file_name.append(name)
             name = os.path.join(write_path, name)
             all_image_paths.append(name)
-    random.shuffle(all_image_paths)
-    for path in all_image_paths:
+    #random.shuffle(all_image_paths)
+    for path in filenames:
         label = load_label(path)  # label of number
         label = np.asarray(label)
         label_data[num] = label
