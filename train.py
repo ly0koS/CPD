@@ -15,7 +15,7 @@ PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/tensorflow/CPD/model/"
 BATCH_SIZE = 20
 
-def PlateData(path,height, width,count):
+def PlateData(path,count):
     data=[]
     labelZh=np.empty((count,1,1))
     labelCh1=np.empty((count,1,1))
@@ -90,7 +90,7 @@ def train():
     path.append(path3)
     #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
     count=25000
-    dataset=PlateData(path,128,128,count)
+    dataset=PlateData(path,count)
     
     model=Forward()
     model.compile(optimizer='adam',
