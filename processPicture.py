@@ -2,7 +2,7 @@ from cv2 import cv2
 import os
 import numpy as np
 import gc
-
+import shutil
 Zh={
   "皖": 0,"沪": 1,"津": 2,"渝": 3,"冀": 4,"晋": 5,"蒙": 6,"辽": 7,"吉": 8,"黑": 9,"苏": 10,"浙": 11,
   "京": 12,"闽": 13,"赣": 14,"鲁": 15,"豫": 16,"鄂": 17,"湘": 18,"粤": 19,"桂": 20,"琼": 21,
@@ -70,14 +70,34 @@ def load_label(location):
 def gen_dataset(path,count,write_flag):
     img_path=[]
     img_data=[]
-    for root,dir,filenames in os.walk(path):
-        for name in filenames:
-            name=os.path.join(path,name)
-            img_path.append(name)
+    for i in path:
+        num=count/len(path)
+        for root,dir,filenames in os.walk(i):
+            for name in filenames:
+                if num>0:
+                    name=os.path.join(i,name)
+                    img_path.append(name)
     label_data=np.empty((len(img_path),7))
     num=0
     char_label=[]
+    if write_flag==1:
+        if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"):
+            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
+            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"
+        else:
+            shutil.rmtree("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
+            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
+            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"
+    elif write_flag==2:
+        if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"):
+            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
+            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"
+        else:
+            shutil.rmtree("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
+            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
+            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"
     for loc in img_path:
+        path=os.path.abspath(os.path.dirname(loc) + os.path.sep + ".")
         image=load_img(loc,path)
         image=cv2.resize(image,(128,128))
         img_data.append(image)
@@ -88,14 +108,9 @@ def gen_dataset(path,count,write_flag):
         for i in range(1,7):
             char+=getKeysByValue(Char,label[i])
         char_label.append(char)                                                                                                                                                             #list of decoded filename
-        if write_flag==1:
-            if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"):
-                os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
-            cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"+char+".jpg",image)
-        elif write_flag==2:
-            if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"):
-                os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
-            cv2.imwrite("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"+char+".jpg",image)
+        if write_flag==1|write_flag==2:
+            filename=write_path+char+".jpg"
+            cv2.imwrite(filename,image)
         num+=1
         if count>1:
             count-=1
@@ -104,7 +119,7 @@ def gen_dataset(path,count,write_flag):
             if write_flag==1:
                 return  img_data,label_data
             elif write_flag==2:
-                return  img_data,char_label
+                return  img_data,label_data
             else:
                 return  img_data,label_data
     img_data=np.asarray(img_data)
