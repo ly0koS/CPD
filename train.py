@@ -25,9 +25,8 @@ def PlateData(path,height, width,count):
     labelCh5=np.empty((count,1,1))
     labelCh6=np.empty((count,1,1))
     data,label=gen_dataset(path,count,0)
-    gc.collect()
-    data=np.asarray(data)
     data=data/255.0
+    gc.collect()
     for i in range(0,count):
         labelZh[i]=label[i][0]
         labelCh1[i]=label[i][1]
@@ -48,9 +47,9 @@ def PlateData(path,height, width,count):
             'output_Ch6': labelCh6
         }
         ))
-        
-    dataset=dataset.shuffle(buffer_size=BATCH_SIZE)
-    #dataset=dataset.repeat()                                                                                                   #big dataset,disable to prevent OOM
+    dataset = dataset.cache()   
+    dataset=dataset.shuffle(count)
+    dataset=dataset.repeat()
     dataset=dataset.batch(BATCH_SIZE)
     dataset=dataset.prefetch(buffer_size=AUTOTUNE)
     return dataset    
@@ -65,7 +64,7 @@ def Forward():
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
-    x=layers.Conv2D(128,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.20)(x)
     x=layers.Flatten()(x)
@@ -82,10 +81,15 @@ def Forward():
 
 
 def train():
-    path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
-    count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
-    if count>25000:
-        count=25000
+    path=[]
+    path1="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
+    path2="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_rotate"
+    path3="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge"
+    path.append(path1)
+    path.append(path2)
+    path.append(path3)
+    #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+    count=25000
     dataset=PlateData(path,128,128,count)
     
     model=Forward()

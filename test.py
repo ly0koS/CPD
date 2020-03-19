@@ -57,7 +57,10 @@ def getKeysByValue(dictOfElements, valueToFind):
 
 #PlateData(5000,273,76,1)
 count=100
-test_dataset,label_dataset=gen_dataset("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge/",count,2)
+path_tmp="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_weather/"
+path=[]
+path.append(path_tmp)
+test_dataset,label_dataset=gen_dataset(path,count,2)
 result=model.predict(test_dataset,verbose=1)
 result=np.asarray(result)
 
@@ -65,11 +68,6 @@ result=np.asarray(result)
 
 for i in range(0,10):
     ran=np.random.randint(0,count)
-    path=os.path.join("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test",label_dataset[ran]+".jpg")
-    image=cv2.imread(path)
-    cv2.imshow("test",image)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
     for j in range(0,7):
             key=np.where(result[j][ran]==np.amax(result[j][ran]))                                                   #result[charlocate][#plate]
             key=np.asscalar(key[0])
@@ -78,7 +76,7 @@ for i in range(0,10):
                 print(key,end=' ')
             elif j==6:
                 print(key)
-    
-
-
-
+    char=str()                                                                                                                                
+    for i in range(0,7):
+        char+=getKeysByValue(index,label_dataset[ran][i])                                                  #decode filename
+    print("Real:",char)
