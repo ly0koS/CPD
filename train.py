@@ -3,98 +3,106 @@ import os
 import sys
 import pathlib
 import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 import numpy as np
 from cv2 import cv2
 import random
-
+from processPicture import gen_dataset
+import gc
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
-SAVE_PATH="/home/ly0kos/Car/model/"
+SAVE_PATH="/home/ly0kos/tensorflow/CPD/model/"
 BATCH_SIZE = 20
 
-def load_and_preprocess_image(path):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_jpeg(image,channels=3)
-    image = tf.image.resize(image, [64, 64])
-    image /= 255.0  # normalize to [0,1] range
-    return image
-
-
-def make_dataset(data_root):
-    data_root = pathlib.Path(data_root)
-    all_image_paths = list(data_root.glob("*/*"))
-    all_image_paths = [str(p) for p in all_image_paths]
-    random.shuffle(all_image_paths)
-    image_count = len(all_image_paths)
-    print("Loading %d pictures", image_count)
-    label_names = sorted(
-        item.name for item in data_root.glob('*/') if item.is_dir())
-    label_to_index = dict((name, index)
-                          for index, name in enumerate(label_names))
-    all_image_labels = [label_to_index[pathlib.Path(path).parent.name]
-                        for path in all_image_paths]
-
-    path_ds = tf.data.Dataset.from_tensor_slices(all_image_paths)
-    image_ds = path_ds.map(load_and_preprocess_image,
-                           num_parallel_calls=AUTOTUNE)
-    label_ds = tf.data.Dataset.from_tensor_slices(tf.cast(all_image_labels, tf.int64))
-    image_label_ds=tf.data.Dataset.zip((image_ds,label_ds))
-    # 设置一个和数据集大小一致的 shuffle buffer size（随机缓冲区大小）以保证数据
-    # 被充分打乱。
-    ds = image_label_ds.shuffle(buffer_size=image_count)
-    ds = ds.repeat()
-    ds = ds.batch(BATCH_SIZE)
-    # 当模型在训练的时候，`prefetch` 使数据集在后台取得 batch。
-    ds = ds.prefetch(buffer_size=AUTOTUNE)
-    steps_per_epoch=tf.math.ceil(len(all_image_paths)/BATCH_SIZE).numpy()
-    return label_to_index,ds,steps_per_epoch
+def PlateData(path,count):
+    data=[]
+    labelZh=np.empty((count,1,1))
+    labelCh1=np.empty((count,1,1))
+    labelCh2=np.empty((count,1,1))
+    labelCh3=np.empty((count,1,1))
+    labelCh4=np.empty((count,1,1))
+    labelCh5=np.empty((count,1,1))
+    labelCh6=np.empty((count,1,1))
+    data,label=gen_dataset(path,count,0)
+    data=data/255.0
+    gc.collect()
+    for i in range(0,count):
+        labelZh[i]=label[i][0]
+        labelCh1[i]=label[i][1]
+        labelCh2[i]=label[i][2]
+        labelCh3[i]=label[i][3]
+        labelCh4[i]=label[i][4]
+        labelCh5[i]=label[i][5]
+        labelCh6[i]=label[i][6]
+    dataset=tf.data.Dataset.from_tensor_slices((
+        data,
+        {
+            'output_Zh': labelZh,
+            'output_Ch1': labelCh1,
+            'output_Ch2': labelCh2,
+            'output_Ch3': labelCh3,
+            'output_Ch4': labelCh4,
+            'output_Ch5': labelCh5,
+            'output_Ch6': labelCh6
+        }
+        ))
+    dataset = dataset.cache()   
+    dataset=dataset.shuffle(count)
+    dataset=dataset.repeat()
+    dataset=dataset.batch(BATCH_SIZE)
+    dataset=dataset.prefetch(buffer_size=AUTOTUNE)
+    return dataset    
+        
 
 def Forward():
-       model=tf.keras.Sequential()
-       model.add(tf.keras.layers.Conv2D(8,(3,3),activation="relu",padding='same',input_shape=(64,64,3),kernel_initializer="he_normal"))
-       model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Dropout(0.2))
-       model.add(tf.keras.layers.Conv2D(16,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
-       model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Conv2D(32,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
-       model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Conv2D(64,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
-       model.add(tf.keras.layers.MaxPooling2D((2,2),strides=2))
-       model.add(tf.keras.layers.Conv2D(128,(3,3),activation="relu",padding='same',kernel_initializer="he_normal"))
-       model.add(tf.keras.layers.Dropout(0.2))
-       model.add(tf.keras.layers.Flatten())
-       model.add(tf.keras.layers.Dense(64, activation='relu'))
-       model.add(tf.keras.layers.Dense(32, activation='softmax'))
-
-       return model
-
-
-
-data_root = os.path.join(PATH, "plate/train/city")
-label,ds,steps_per_epoch = make_dataset(data_root)
-
-
-
-Han_model=Forward()
-Han_model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]) 
-
-save_model=os.path.join(SAVE_PATH,"Han/")
-
-Han_model.summary()
-
-Han_model.fit(ds,epochs=25,steps_per_epoch=steps_per_epoch)
-
-Han_model.save(save_model,overwrite=True) 
+    input=keras.Input(shape=(128,128,3),name='title')
+    x=layers.Conv2D(16,3,activation="relu",padding='same',kernel_initializer="he_normal")(input)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Dropout(0.25)(x)
+    x=layers.Conv2D(32,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
+    x=layers.MaxPooling2D(2)(x)
+    x=layers.Dropout(0.20)(x)
+    x=layers.Flatten()(x)
+    output_Zh=layers.Dense(65,activation="softmax",name="output_Zh")(x)
+    output_1=layers.Dense(65,activation="softmax",name="output_Ch1")(x)
+    output_2=layers.Dense(65,activation="softmax",name="output_Ch2")(x)
+    output_3=layers.Dense(65,activation="softmax",name="output_Ch3")(x)
+    output_4=layers.Dense(65,activation="softmax",name="output_Ch4")(x)
+    output_5=layers.Dense(65,activation="softmax",name="output_Ch5")(x)
+    output_6=layers.Dense(65,activation="softmax",name="output_Ch6")(x)
+    model=keras.Model(inputs=input,outputs=[output_Zh,output_1,output_2,output_3,output_4,output_5,output_6])
+    
+    return model
 
 
+def train():
+    path=[]
+    path1="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
+    path2="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_rotate"
+    path3="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge"
+    path.append(path1)
+    path.append(path2)
+    path.append(path3)
+    #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+    count=25000
+    dataset=PlateData(path,count)
+    
+    model=Forward()
+    model.compile(optimizer='adam',
+                loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
+                metrics=["accuracy"]) 
+    steps=tf.math.ceil(count/BATCH_SIZE).numpy()
 
-""" img=os.path.join("/home/ly0kos/Car/plate/train/city/鄂","鄂A529HI.jpg")
-img=load_and_preprocess_image(img)
-img = np.expand_dims(img, axis=0)
-predict=Han_model.predict_classes(img)
+    keras.utils.plot_model(model, 'model.png', show_shapes=True)
 
-for (k,v) in label.items():
-    if v==predict:
-        print(k) """
+    model.summary()
+
+    model.fit(dataset,steps_per_epoch=steps,epochs=20)
+
+
+    model.save(SAVE_PATH)

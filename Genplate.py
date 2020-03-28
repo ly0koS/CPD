@@ -19,13 +19,48 @@ chars = ["京", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "
              "Y", "Z"
              ]
 
+def R(val):
+    return int(np.random.random()*val)
+
+def rotRandrom(img,factor,shape):
+        src_points=np.float32([[0,0],[0,shape[0]],[shape[1],0],[shape[1],shape[0]]])              #Original Four Point From input image
+        dst_points=np.float32([[R(factor),R(factor)],[R(factor),shape[0]-R(factor)],
+        [shape[1]-R(factor),R(factor)],[shape[1]-R(factor),shape[0]-R(factor)]])
+        Transfer=cv2.getPerspectiveTransform(src_points,dst_points)
+        output=cv2.warpPerspective(img,Transfer,shape)
+        return output
+
+def GaussBlur(img,level):
+    img=cv2.GaussianBlur(img,(level*2+1,level*2+1),0)
+    cv2.imshow("bg",img)
+    cv2.waitKey()
+    return img
+
+def Add_Env(img,env_set):
+    index=R(len(env_set))
+    env=cv2.imread(env_set[index])
+    env=cv2.resize(env,(img.shape[1],img.shape[0]))
+    for i in range(0,img.shape[1]):
+        for j in range(0,img.shape[0]):
+            if img[j][i].any()==0:
+                img[j][i]=env[j][i]
+    return img
+
+
+
 class GenPlate:
-    def __init__(self,Zhttf,Enttf):
+    def __init__(self,Zhttf,Enttf,Env_Path,flag):
         self.fontZh=ImageFont.truetype(Zhttf,43,0)
         self.fontEn=ImageFont.truetype(Enttf,60,0)
         self.img=np.array(Image.new("RGB",(226,70),(255,255,255)))
         self.bg  = cv2.resize(cv2.imread("/home/ly0kos/Car/images/template.bmp"),(226,70))
         self.smu = cv2.imread("/home/ly0kos/Car/images/smu2.jpg")
+        self.env_path=[]
+        for root,dir,filename in os.walk(Env_Path):
+            for name in filename:
+                path=os.path.join(root,name)
+                self.env_path.append(path)
+        self.save_flag=flag
 
     def GenZh(self,font,text):
         img=Image.new("RGB",(45,70),(255,255,255))
@@ -44,7 +79,6 @@ class GenPlate:
 
     def draw(self,text):
         offset= 2 
-
         self.img[0:70,offset+8:offset+8+23]= self.GenZh(self.fontZh,text[0])
         self.img[0:70,offset+8+23+6:offset+8+23+6+23]= self.GenEN(self.fontEn,text[1])
         for i in range(5):
@@ -55,36 +89,47 @@ class GenPlate:
     def genStr(self):
         Str=""
         pos=0
+        label=np.empty((7,1),dtype=np.int64)
         while (pos<7):
             if pos==0:
-                Str += chars[np.random.randint(0,31)]                                      #Chinese Char
+                temp=np.random.randint(0,31)
+                Str += chars[temp]                                                                               #Chinese Char
+                label[pos]=temp
                 pos +=1
             elif pos==1:
-                Str+=chars[np.random.randint(41,65)]                                      #EnglishAlphabet
+                temp=np.random.randint(41,65)
+                Str+=chars[temp]                                                                                 #EnglishAlphabet
+                label[pos]=temp
                 pos+=1
             else:
-                Str+=chars[np.random.randint(31,41)]
+                temp=np.random.randint(31,41)
+                Str+=chars[temp]
+                label[pos]=temp
                 pos+=1
-        return Str
+        return label,Str
 
     def generate(self,text):
         plate=self.draw(text)
         plate=cv2.bitwise_not(plate)                                                                                    #黑底白字
         plate=cv2.bitwise_or(plate,self.bg)                                                                        #加入背景
+        plate=rotRandrom(plate,15,(plate.shape[1],plate.shape[0]))
+        plate=Add_Env(plate,self.env_path)
+        plate=GaussBlur(plate,1+R(7))
         return plate
         
 
     def genBatch(self,batchSize,outputPath,size):
+        data=[]
+        label=np.empty((batchSize,7,1))
         if not os.path.exists(outputPath):
             os.mkdir(outputPath)
         for i in range(batchSize):
-            plateStr=self.genStr()
+            num,plateStr=self.genStr()
             img=self.generate(plateStr)
             img = cv2.resize(img,size)
-            filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
-            cv2.imwrite(filename, img)
-            
-            
-
-G = GenPlate("/home/ly0kos/Car/font/platech.ttf",'/home/ly0kos/Car/font/platechar.ttf')
-G.genBatch(1000,"/home/ly0kos/Car/temp",(272,72)) 
+            data.append(img)
+            label[i]=num
+            if self.save_flag==1:
+                filename = os.path.join(outputPath, str(i).zfill(4) + '.' + plateStr + ".jpg")
+                cv2.imwrite(filename, img)
+        return data,label
