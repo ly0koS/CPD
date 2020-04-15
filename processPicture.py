@@ -101,7 +101,7 @@ def gen_dataset(path,count,write_flag):
         path=os.path.abspath(os.path.dirname(loc) + os.path.sep + ".")
         image=load_img(loc,path)
         image=cv2.resize(image,(128,128))
-        image=cv2.cvtColor(image,cv2.COLOR_RGB2GRAY)
+        image=cv2.GaussianBlur(image,(3,3),0)
         img_data.append(image)
         label=load_label(loc)                                                                                                                                                                   #label of number
         label=np.asarray(label)
@@ -118,7 +118,14 @@ def gen_dataset(path,count,write_flag):
             count-=1
         else:
             img_data=np.asarray(img_data)
-            gc.collect()
+            if write_flag==1:
+                return  img_data,label_data
+            elif write_flag==2:
+                return  img_data,label_data
+            else:
+                return  img_data,label_data
+    img_data=np.asarray(img_data)
+    gc.collect()
     return  img_data,label_data
 
 
