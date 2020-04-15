@@ -52,7 +52,8 @@ def load_img(location,folder):
 def load_label(location):
     key_list=[]
     start=find_char(location,'-',-50,1)
-    key=location[start+1:start+2]
+    end=find_char(location,'_',start,1)
+    key=location[start+1:end]
     key=int(key)+34
     key_list.append(key)
     for i in range(0,5):
@@ -81,21 +82,21 @@ def gen_dataset(path,count,write_flag):
     num=0
     char_label=[]
     if write_flag==1:
-        if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"):
-            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
-            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"
+        if not os.path.exists("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/"):
+            os.mkdir("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/")
+            write_path="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/"
         else:
-            shutil.rmtree("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
-            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/")
-            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_train/"
+            shutil.rmtree("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/")
+            os.mkdir("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/")
+            write_path="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_train/"
     elif write_flag==2:
-        if not os.path.exists("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"):
-            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
-            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"
+        if not os.path.exists("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/"):
+            os.mkdir("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/")
+            write_path="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/"
         else:
-            shutil.rmtree("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
-            os.mkdir("/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/")
-            write_path="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_test/"
+            shutil.rmtree("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/")
+            os.mkdir("/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/")
+            write_path="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/"
     for loc in img_path:
         path=os.path.abspath(os.path.dirname(loc) + os.path.sep + ".")
         image=load_img(loc,path)
@@ -108,7 +109,7 @@ def gen_dataset(path,count,write_flag):
         for i in range(1,7):
             char+=getKeysByValue(Char,label[i])
         char_label.append(char)                                                                                                                                                             #list of decoded filename
-        if write_flag==1|write_flag==2:
+        if write_flag!=0:
             filename=write_path+char+".jpg"
             cv2.imwrite(filename,image)
         num+=1

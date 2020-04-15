@@ -10,6 +10,8 @@ from processPicture import gen_dataset
 Model_Path="/home/ly0kos/tensorflow/CPD/model/"
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
+write_path="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_test/"
+
 index={
   "A" : 0,"B" : 1,"C" : 2,"D" : 3,"E" : 4,"F" : 5,"G" : 6,"H" : 7,"J" : 8,"K" : 9,"L" : 10,"M" : 11,
   "N" : 12,"P" : 13,"Q" : 14,"R" : 15,"S" : 16,"T" : 17,"U" : 18,"V" : 19,"W" : 20,"X":  21,
@@ -56,14 +58,13 @@ def getKeysByValue(dictOfElements, valueToFind):
             return  listOfKeys
 
 #PlateData(5000,273,76,1)
-count=100
-path_tmp="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_weather/"
+count=1000
+path_tmp="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_challenge/"
 path=[]
 path.append(path_tmp)
 test_dataset,label_dataset=gen_dataset(path,count,2)
 result=model.predict(test_dataset,verbose=1)
 result=np.asarray(result)
-
 
 
 for i in range(0,10):

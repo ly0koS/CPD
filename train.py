@@ -10,10 +10,12 @@ from cv2 import cv2
 import random
 from processPicture import gen_dataset
 import gc
+import datetime
+
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 PATH = "/home/ly0kos/Car/"
 SAVE_PATH="/home/ly0kos/tensorflow/CPD/model/"
-BATCH_SIZE = 20
+BATCH_SIZE = 32
 
 def PlateData(path,count):
     data=[]
@@ -82,27 +84,31 @@ def Forward():
 
 def train():
     path=[]
-    path1="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_base"
-    path2="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_rotate"
-    path3="/home/ly0kos/WD/tensorflow/ccpd_dataset/ccpd_challenge"
+    path1="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_base"
+    path2="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_rotate"
+    path3="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_challenge"
     path.append(path1)
     path.append(path2)
     path.append(path3)
     #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
-    count=25000
+    count=9000
     dataset=PlateData(path,count)
     
     model=Forward()
     model.compile(optimizer='adam',
                 loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
                 metrics=["accuracy"]) 
+
     steps=tf.math.ceil(count/BATCH_SIZE).numpy()
 
     keras.utils.plot_model(model, 'model.png', show_shapes=True)
-
+    
     model.summary()
 
-    model.fit(dataset,steps_per_epoch=steps,epochs=20)
+    log_dir="/home/ly0kos/tensorflow/CPD/logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1,profile_batch=0)
+
+    model.fit(dataset,steps_per_epoch=steps,epochs=20,callbacks=[tensorboard_callback])
 
 
     model.save(SAVE_PATH)
