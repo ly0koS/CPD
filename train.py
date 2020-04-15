@@ -26,7 +26,7 @@ def PlateData(path,count):
     labelCh4=np.empty((count,1,1))
     labelCh5=np.empty((count,1,1))
     labelCh6=np.empty((count,1,1))
-    data,label=gen_dataset(path,count,0)
+    data,label=gen_dataset(path,count,1)
     data=data/255.0
     gc.collect()
     for i in range(0,count):
@@ -58,7 +58,7 @@ def PlateData(path,count):
         
 
 def Forward():
-    input=keras.Input(shape=(128,128,3),name='title')
+    input=keras.Input(shape=(128,128,1),name='title')
     x=layers.Conv2D(16,3,activation="relu",padding='same',kernel_initializer="he_normal")(input)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.25)(x)
