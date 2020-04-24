@@ -1,0 +1,83 @@
+comgr/Ubuntu 16.04 1.6.0.124-rocm-rel-3.3-19-7ac2e34 amd64 [可从该版本升级：1.6.0.121-rocm-rel-3.1-44-cbb02f9]
+comgr3.3.0/Ubuntu 16.04 1.6.0.124-rocm-rel-3.3-19-7ac2e34 amd64
+hip-base/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64 [可从该版本升级：3.1.20086.4516-rocm-rel-3.1-44-8ef00e2d]
+hip-base3.3.0/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hip-doc/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64 [可从该版本升级：3.1.20086.4516-rocm-rel-3.1-44-8ef00e2d]
+hip-doc3.3.0/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hip-hcc/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64 [可从该版本升级：3.1.20086.4516-rocm-rel-3.1-44-8ef00e2d]
+hip-hcc3.3.0/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hip-nvcc/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hip-nvcc3.3.0/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hip-samples/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64 [可从该版本升级：3.1.20086.4516-rocm-rel-3.1-44-8ef00e2d]
+hip-samples3.3.0/Ubuntu 16.04 3.3.20126.4629-rocm-rel-3.3-19-2dbba46b amd64
+hipblas/Ubuntu 16.04 0.24.0.330-rocm-rel-3.3-19-ef9f60d amd64 [可从该版本升级：0.20.0.307-rocm-rel-3.1-44-ff35c32]
+hipblas3.3.0/Ubuntu 16.04 0.24.0.330-rocm-rel-3.3-19-ef9f60d amd64
+hipcub/Ubuntu 16.04 2.10.0.108-rocm-rel-3.3-19-61fca3e amd64 [可从该版本升级：2.9.0.92-rocm-rel-3.1-44-40e1d66]
+hipcub3.3.0/Ubuntu 16.04 2.10.0.108-rocm-rel-3.3-19-61fca3e amd64
+hipsparse/Ubuntu 16.04 1.5.4.237-rocm-rel-3.3-19-961de7b amd64 [可从该版本升级：1.5.2.229-rocm-rel-3.1-44-3085fe5]
+hipsparse3.3.0/Ubuntu 16.04 1.5.4.237-rocm-rel-3.3-19-961de7b amd64
+hsa-ext-rocr-dev/Ubuntu 16.04 1.1.30300.0-rocm-rel-3.3-19-23fc088b amd64 [可从该版本升级：1.1.30100.0-rocm-rel-3.1-44-ecafeba1]
+hsa-ext-rocr-dev3.3.0/Ubuntu 16.04 1.1.30300.0-rocm-rel-3.3-19-23fc088b amd64
+hsa-rocr-dev/Ubuntu 16.04 1.1.30300.0-rocm-rel-3.3-19-23fc088b amd64 [可从该版本升级：1.1.30100.0-rocm-rel-3.1-44-ecafeba1]
+hsa-rocr-dev3.3.0/Ubuntu 16.04 1.1.30300.0-rocm-rel-3.3-19-23fc088b amd64
+libfcgi-procmanager-maxrequests-perl/bionic,bionic 0.2-1 all
+libfcgi-procmanager-perl/bionic,bionic 0.28-1 all
+migraphx/Ubuntu 16.04 0.6.0.3793-rocm-rel-3.3-19-d1e945d amd64
+migraphx3.3.0/Ubuntu 16.04 0.6.0.3793-rocm-rel-3.3-19-d1e945d amd64
+miopen-hip/Ubuntu 16.04 2.3.0.7730-rocm-rel-3.3-19-ef17912 amd64 [可从该版本升级：2.2.1.7633-rocm-rel-3.1-44-9218683]
+miopen-hip3.3.0/Ubuntu 16.04 2.3.0.7730-rocm-rel-3.3-19-ef17912 amd64
+miopen-opencl/Ubuntu 16.04 2.3.0.7730-rocm-rel-3.3-19-ef17912 amd64
+miopen-opencl3.3.0/Ubuntu 16.04 2.3.0.7730-rocm-rel-3.3-19-ef17912 amd64
+miopengemm/Ubuntu 16.04 1.1.6.647-rocm-rel-3.3-19-b51a125 amd64 [可从该版本升级：1.1.6.647-rocm-rel-3.1-44-b51a125]
+miopengemm3.3.0/Ubuntu 16.04 1.1.6.647-rocm-rel-3.3-19-b51a125 amd64
+procmail/bionic 3.22-26 amd64
+procmail-lib/bionic,bionic 1:2009.1202-4 all
+procmeter3/bionic 3.6-1 amd64
+rccl/Ubuntu 16.04 2.10.0-311-g1d2aa4e-rocm-rel-3.3-19 amd64 [可从该版本升级：2.10.0-254-g31648ec-rocm-rel-3.1-44]
+rccl3.3.0/Ubuntu 16.04 2.10.0-311-g1d2aa4e-rocm-rel-3.3-19 amd64
+rocalution/Ubuntu 16.04 1.8.1.481-rocm-rel-3.3-19-3e9ad81 amd64 [可从该版本升级：1.7.1.473-rocm-rel-3.1-44-7220da1]
+rocalution3.3.0/Ubuntu 16.04 1.8.1.481-rocm-rel-3.3-19-3e9ad81 amd64
+rocblas/Ubuntu 16.04 2.18.0.2030-rocm-rel-3.3-19-50d99ed amd64 [可从该版本升级：2.14.1.1861-rocm-rel-3.1-44-cc49425]
+rocblas3.3.0/Ubuntu 16.04 2.18.0.2030-rocm-rel-3.3-19-50d99ed amd64
+rocfft/Ubuntu 16.04 1.0.1.804-rocm-rel-3.3-19-e732369 amd64 [可从该版本升级：0.9.10.783-rocm-rel-3.1-44-b7f9ebe]
+rocfft3.3.0/Ubuntu 16.04 1.0.1.804-rocm-rel-3.3-19-e732369 amd64
+rocm-bandwidth-test/Ubuntu 16.04 1.4.0.13-rocm-rel-3.3-19-gf671f73 amd64
+rocm-bandwidth-test3.3.0/Ubuntu 16.04 1.4.0.13-rocm-rel-3.3-19-gf671f73 amd64
+rocm-clang-ocl/Ubuntu 16.04 0.5.0.48-rocm-rel-3.3-19-fa039e7 amd64 [可从该版本升级：0.5.0.48-rocm-rel-3.1-44-fa039e7]
+rocm-clang-ocl3.3.0/Ubuntu 16.04 0.5.0.48-rocm-rel-3.3-19-fa039e7 amd64
+rocm-cmake/Ubuntu 16.04 0.3.0.141-rocm-rel-3.3-19-1b9e698 amd64 [可从该版本升级：0.3.0.141-rocm-rel-3.1-44-1b9e698]
+rocm-cmake3.3.0/Ubuntu 16.04 0.3.0.141-rocm-rel-3.3-19-1b9e698 amd64
+rocm-debug-agent/Ubuntu 16.04,now 1.0.0 amd64 [已安装，自动]
+rocm-debug-agent3.3.0/Ubuntu 16.04 1.0.0 amd64
+rocm-dev/Ubuntu 16.04 3.3.0-19 amd64 [可从该版本升级：3.1.44]
+rocm-dev3.3.0/Ubuntu 16.04 3.3.0-19 amd64
+rocm-device-libs/Ubuntu 16.04 1.0.0.565-rocm-rel-3.3-19-58abd89 amd64 [可从该版本升级：1.0.0.563-rocm-rel-3.1-44-8f441a8]
+rocm-device-libs3.3.0/Ubuntu 16.04 1.0.0.565-rocm-rel-3.3-19-58abd89 amd64
+rocm-dkms/Ubuntu 16.04 3.3.0-19 amd64 [可从该版本升级：3.1.44]
+rocm-dkms3.3.0/Ubuntu 16.04 3.3.0-19 amd64
+rocm-libs/Ubuntu 16.04 3.3.0-19 amd64 [可从该版本升级：3.1.44]
+rocm-libs3.3.0/Ubuntu 16.04 3.3.0-19 amd64
+rocm-opencl/Ubuntu 16.04 2.0.0-rocm-rel-3.3-19-363509c8d amd64 [可从该版本升级：2.0.0-rocm-rel-3.1-44-8f28d95ad]
+rocm-opencl-dev/Ubuntu 16.04 2.0.0-rocm-rel-3.3-19-363509c8d amd64 [可从该版本升级：2.0.0-rocm-rel-3.1-44-8f28d95ad]
+rocm-opencl-dev3.3.0/Ubuntu 16.04 2.0.0-rocm-rel-3.3-19-363509c8d amd64
+rocm-opencl3.3.0/Ubuntu 16.04 2.0.0-rocm-rel-3.3-19-363509c8d amd64
+rocm-smi/Ubuntu 16.04 1.0.0-199-rocm-rel-3.3-19-ga9d6426 amd64 [可从该版本升级：1.0.0-194-rocm-rel-3.1-44-g840011e]
+rocm-smi-lib64/now 2.3.0.3.rocm-rel-3.1-44-a246aac amd64 [已安装，本地]
+rocm-smi-lib643.3.0/Ubuntu 16.04 2.2.0.3.rocm-rel-3.3-19-a482394 amd64
+rocm-smi3.3.0/Ubuntu 16.04 1.0.0-199-rocm-rel-3.3-19-ga9d6426 amd64
+rocm-utils/Ubuntu 16.04 3.3.0-19 amd64 [可从该版本升级：3.1.44]
+rocm-utils3.3.0/Ubuntu 16.04 3.3.0-19 amd64
+rocm-validation-suite/Ubuntu 16.04 3.2.30300 amd64
+rocm-validation-suite3.3.0/Ubuntu 16.04 3.2.30300 amd64
+rocminfo/Ubuntu 16.04 1.30300.0 amd64 [可从该版本升级：1.30100.0]
+rocminfo3.3.0/Ubuntu 16.04 1.30300.0 amd64
+rocprim/Ubuntu 16.04 2.10.0.974-rocm-rel-3.3-19-6042e8a amd64 [可从该版本升级：2.9.0.952-rocm-rel-3.1-44-5fa0c79]
+rocprim3.3.0/Ubuntu 16.04 2.10.0.974-rocm-rel-3.3-19-6042e8a amd64
+rocrand/Ubuntu 16.04 2.10.0.663-rocm-rel-3.3-19-6f0dadf amd64 [可从该版本升级：2.10.0.657-rocm-rel-3.1-44-448c673]
+rocrand3.3.0/Ubuntu 16.04 2.10.0.663-rocm-rel-3.3-19-6f0dadf amd64
+rocsolver/Ubuntu 16.04 2.7.0.77-rocm-rel-3.3-19-4989200 amd64
+rocsolver3.3.0/Ubuntu 16.04 2.7.0.77-rocm-rel-3.3-19-4989200 amd64
+rocsparse/Ubuntu 16.04 1.8.9.764-rocm-rel-3.3-19-593d877 amd64 [可从该版本升级：1.8.4.726-rocm-rel-3.1-44-eb854f0]
+rocsparse3.3.0/Ubuntu 16.04 1.8.9.764-rocm-rel-3.3-19-593d877 amd64
+rocthrust/Ubuntu 16.04 2.9.0.453-rocm-rel-3.3-19-3de52fa amd64 [可从该版本升级：2.9.0.418-rocm-rel-3.1-44-c4b5328]
+rocthrust3.3.0/Ubuntu 16.04 2.9.0.453-rocm-rel-3.3-19-3de52fa amd64
