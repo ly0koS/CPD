@@ -48,8 +48,7 @@ def PlateData(path,count):
             'output_Ch5': labelCh5,
             'output_Ch6': labelCh6
         }
-        ))
-    dataset = dataset.cache()   
+        ))                                                                                                                                                                                                      #Build TensorFlow Dataset (make a copy of data? Doubled Memory usage)
     dataset=dataset.shuffle(count)
     dataset=dataset.repeat()
     dataset=dataset.batch(BATCH_SIZE)
@@ -58,13 +57,11 @@ def PlateData(path,count):
         
 
 def Forward():
-    input=keras.Input(shape=(128,128,3),name='input')
+    input=keras.Input(shape=(128,128,3),name='input')                                                                                               
     x=layers.Conv2D(16,3,activation="relu",padding='same',kernel_initializer="he_normal")(input)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Dropout(0.25)(x)
     x=layers.Conv2D(32,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
-    x=layers.MaxPooling2D(2)(x)
-    x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
@@ -91,7 +88,7 @@ def train():
     path.append(path2)
     path.append(path3)
     #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
-    count=3000
+    count=12000
     dataset=PlateData(path,count)
     
     model=Forward()
