@@ -1,10 +1,11 @@
+#coding:utf-8
 import tensorflow as tf
 from tensorflow import keras
 from train import train
 import numpy as np
 import os
 import sys
-from cv2 import cv2
+import matplotlib.pyplot as plt
 from processPicture import gen_dataset
 
 Model_Path="/home/ly0kos/tensorflow/CPD/model/"
@@ -69,15 +70,16 @@ result=np.asarray(result)
 
 for i in range(0,10):
     ran=np.random.randint(0,count)
+    predict_key=str()
     for j in range(0,7):
             key=np.where(result[j][ran]==np.amax(result[j][ran]))                                                   #result[charlocate][#plate]
             key=np.asscalar(key[0])
             key=getKeysByValue(index,key)
-            if j<6:
-                print(key,end=' ')
-            elif j==6:
-                print(key)
-    char=str()                                                                                                                                
+            predict_key=predict_key+key
+    char=str()  
     for i in range(0,7):
         char+=getKeysByValue(index,label_dataset[ran][i])                                                  #decode filename
-    print("Real:",char)
+    plt.imshow(test_dataset[ran])
+    plt.title(u'真实车牌号:'+char)
+    plt.xlabel(predict_key)
+    plt.show()
