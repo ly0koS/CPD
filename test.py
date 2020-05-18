@@ -7,6 +7,7 @@ import os
 import sys
 import matplotlib.pyplot as plt
 from processPicture import gen_dataset
+import time
 
 Model_Path="/home/ly0kos/tensorflow/CPD/model/"
 AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -59,12 +60,15 @@ def getKeysByValue(dictOfElements, valueToFind):
             return  listOfKeys
 
 #PlateData(5000,273,76,1)
+start=time.clock()
 count=1000
-path_tmp="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_challenge/"
+path_tmp="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_rotate/"
 path=[]
 path.append(path_tmp)
 test_dataset,label_dataset=gen_dataset(path,count,2)
 result=model.predict(test_dataset,verbose=1)
+end=time.clock()
+print("Run time = ",end-start)
 result=np.asarray(result)
 
 
@@ -79,7 +83,7 @@ for i in range(0,10):
     char=str()  
     for i in range(0,7):
         char+=getKeysByValue(index,label_dataset[ran][i])                                                  #decode filename
-    plt.imshow(test_dataset[ran])
+    plt.imshow(test_dataset[ran][:,:,::-1])
     plt.title(u'真实车牌号:'+char)
-    plt.xlabel(predict_key)
+    plt.xlabel(u'预测车牌号:'+predict_key)
     plt.show()

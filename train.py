@@ -65,7 +65,7 @@ def Forward():
     x=layers.MaxPooling2D(2)(x)
     x=layers.Conv2D(64,3,activation="relu",padding='same',kernel_initializer="he_normal")(x)
     x=layers.MaxPooling2D(2)(x)
-    x=layers.Dropout(0.20)(x)
+    x=layers.Dropout(0.25)(x)
     x=layers.Flatten()(x)
     output_Zh=layers.Dense(65,activation="softmax",name="output_Zh")(x)
     output_1=layers.Dense(65,activation="softmax",name="output_Ch1")(x)
@@ -81,16 +81,21 @@ def Forward():
 
 def train():
     path=[]
-    path1="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_base"
+    path1="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_weather"
     path2="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_rotate"
     path3="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_challenge"
+    path4="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_tilt"
+    path5="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_blur"
+    path6="/home/ly0kos/WD/tensorflow/CCPD2019/ccpd_base"
     path.append(path1)
     path.append(path2)
     path.append(path3)
+    path.append(path4)
+    path.append(path5)
+    path.append(path6)
     #count=len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
     count=12000
     dataset=PlateData(path,count)
-    
     model=Forward()
     model.compile(optimizer='adam',
                 loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False,name="loss"),
